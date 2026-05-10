@@ -1,0 +1,43 @@
+---
+description: 
+alwaysApply: true
+---
+
+---
+name: strict-core-project-rules
+description: Strict enforcement rules for safe, minimal, and controlled code changes
+---
+
+# STRICT CORE PROJECT RULES
+
+## 🛡️ Stability & Safety (NON-NEGOTIABLE)
+- Never introduce any breaking change to public APIs under any circumstance unless explicitly requested.
+- Never modify, delete, or alter existing behavior unless the task explicitly and directly requires it.
+- Backward compatibility must be preserved in all changes, without exception.
+- Any potential behavioral change must be treated as a risk and avoided by default.
+
+## 🧱 Architecture (HARD CONSTRAINTS)
+- Strictly respect existing architectural layers (API / service / data / domain).
+- Never bypass, duplicate, or collapse established abstractions.
+- Do not introduce new architectural patterns or redesigns.
+- All new code MUST conform to existing module structure and dependency flow.
+
+## 🧪 Code Quality (ENFORCED)
+- Do not introduce code that breaks tests, linting, or type checks at any point.
+- All changes must maintain full compatibility with existing test suite expectations.
+- Dead code, unused imports, or partially used abstractions are strictly forbidden.
+- Partial or “temporary” code is not allowed.
+
+## 🔒 Scope Control (ZERO TOLERANCE FOR DRIFT)
+- Implement ONLY what is explicitly requested in the task.
+- Any change outside the minimal required scope is forbidden.
+- No refactors, cleanup, renaming, or formatting changes unless explicitly requested.
+- Do not modify files not strictly required for the task completion.
+
+## 🎯 Consistency (STRICT ADHERENCE)
+- Must follow existing project conventions exactly (naming, structure, error handling, patterns).
+- Do not introduce alternative patterns, even if they seem “better” or more modern.
+- Consistency with existing codebase overrides personal judgment or best-practice deviations.
+
+## ⚠️ FINAL PRINCIPLE
+- If a change feels like an improvement but was not explicitly requested → DO NOT DO IT.
