@@ -1,0 +1,6 @@
+---
+alwaysApply: false
+---
+## Testing
+- All changes must include tests when behavior is modified or added.
+- No commits are allowed with failing tests.
