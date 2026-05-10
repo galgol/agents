@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { api, ApiError } from '../api.js'
+import { ApiError } from '../api.js'
 import { isAuthenticated, setToken } from '../auth.js'
 
 export default function Login() {
@@ -23,7 +23,16 @@ export default function Login() {
     setError(null)
     setSubmitting(true)
     try {
-      const data = await api.post('/auth/login', { username, password })
+      const body = new URLSearchParams({ username, password })
+      const res = await fetch('/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body,
+      })
+      if (!res.ok) {
+        throw new ApiError(`Request failed (${res.status})`, res.status)
+      }
+      const data = await res.json()
       const token = data?.access_token || data?.token
       if (!token) throw new Error('Login response missing token')
       setToken(token)
