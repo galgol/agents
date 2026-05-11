@@ -1,25 +1,48 @@
-{
-  "name": "Gal’s playground Automation",
-  "triggers": [
-    {
-      "git": {
-        "push": {
-          "repo": "https://github.com/galgol/agents",
-          "repos": [
-            "https://github.com/galgol/agents"
-          ],
-          "branch": "master"
-        }
-      }
-    }
-  ],
-  "actions": [],
-  "prompts": [
-    {
-      "prompt": "code review for the changes based on `.cursor\\skills\\SKILL.md`  and summerize the main 3 changes needed"
-    }
-  ],
-  "model": "claude-4.6-opus-high-thinking",
-  "memoryEnabled": true,
-  "scope": "private"
-}
+name: Cursor Agent Code Review
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Cursor SDK
+        run: npm install --no-save @cursor/sdk
+
+      - name: Run Cursor agent code review
+        env:
+          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+        run: |
+          cat > /tmp/cursor-review.mjs <<'EOF'
+          import { Agent } from "@cursor/sdk";
+
+          const prompt = [
+            "Perform a code review of the latest commit (use `git diff HEAD~1 HEAD`).",
+            "Apply the guidance in `.cursor/skills/SKILL.md`.",
+            "Summarize the main 3 changes needed.",
+          ].join("\n");
+
+          const result = await Agent.prompt(prompt, {
+            apiKey: process.env.CURSOR_API_KEY,
+            model: { id: "auto" },
+            local: { cwd: process.cwd() },
+          });
+
+          console.log("Status:", result.status);
+          console.log(result.result ?? "");
+          if (result.status === "error") process.exit(2);
+          EOF
+          node /tmp/cursor-review.mjs
