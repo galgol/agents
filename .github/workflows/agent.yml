@@ -20,9 +20,11 @@ jobs:
           node-version: "20"
 
       - name: Install Cursor SDK
-        run: npm i -g @cursor/sdk tsx
+        run: |
+          npm init -y
+          npm install @cursor/sdk tsx
 
       - name: Run Cursor review
         env:
           CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
-        run: tsx .github/scripts/cursor-review.ts
+        run: npx tsx .github/scripts/cursor-review.ts
