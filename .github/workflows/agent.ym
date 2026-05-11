@@ -1,0 +1,25 @@
+{
+  "name": "Gal’s playground Automation",
+  "triggers": [
+    {
+      "git": {
+        "push": {
+          "repo": "https://github.com/galgol/agents",
+          "repos": [
+            "https://github.com/galgol/agents"
+          ],
+          "branch": "master"
+        }
+      }
+    }
+  ],
+  "actions": [],
+  "prompts": [
+    {
+      "prompt": "code review for the changes based on `.cursor\\skills\\SKILL.md`  and summerize the main 3 changes needed"
+    }
+  ],
+  "model": "claude-4.6-opus-high-thinking",
+  "memoryEnabled": true,
+  "scope": "private"
+}
