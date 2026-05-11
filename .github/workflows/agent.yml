@@ -1,48 +1,28 @@
-name: Cursor Agent Code Review
+name: Cursor code review on push
 
 on:
   push:
-    branches:
-      - master
+    branches: [master, main]
 
 jobs:
   review:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
-          fetch-depth: 2
+          fetch-depth: 2  # need previous commit to diff against
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: "20"
 
       - name: Install Cursor SDK
-        run: npm install --no-save @cursor/sdk
+        run: npm i -g @cursor/sdk tsx
 
-      - name: Run Cursor agent code review
+      - name: Run Cursor review
         env:
           CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
-        run: |
-          cat > /tmp/cursor-review.mjs <<'EOF'
-          import { Agent } from "@cursor/sdk";
-
-          const prompt = [
-            "Perform a code review of the latest commit (use `git diff HEAD~1 HEAD`).",
-            "Apply the guidance in `.cursor/skills/SKILL.md`.",
-            "Summarize the main 3 changes needed.",
-          ].join("\n");
-
-          const result = await Agent.prompt(prompt, {
-            apiKey: process.env.CURSOR_API_KEY,
-            model: { id: "auto" },
-            local: { cwd: process.cwd() },
-          });
-
-          console.log("Status:", result.status);
-          console.log(result.result ?? "");
-          if (result.status === "error") process.exit(2);
-          EOF
-          node /tmp/cursor-review.mjs
+        run: tsx .github/scripts/cursor-review.ts
