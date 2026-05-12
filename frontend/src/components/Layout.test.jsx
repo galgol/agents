@@ -5,11 +5,11 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import Layout from './Layout.jsx'
 import { getToken, setToken } from '../auth.js'
 
-function renderLayout(initial = '/characters') {
+function renderLayout(initial = '/main') {
   return render(
     <MemoryRouter initialEntries={[initial]}>
       <Routes>
-        <Route path="/characters" element={<Layout><h2>Inside</h2></Layout>} />
+        <Route path="/main" element={<Layout><h2>Inside</h2></Layout>} />
         <Route path="/login" element={<div>Login page</div>} />
       </Routes>
     </MemoryRouter>,
@@ -19,7 +19,7 @@ function renderLayout(initial = '/characters') {
 describe('<Layout />', () => {
   it('renders header brand, navigation, and children', () => {
     renderLayout()
-    expect(screen.getByRole('link', { name: 'Custom Ebook' })).toHaveAttribute('href', '/characters')
+    expect(screen.getByRole('link', { name: 'Custom Ebook' })).toHaveAttribute('href', '/main')
     expect(screen.getByRole('link', { name: 'Home' })).toBeInTheDocument()
     expect(screen.getByText('Inside')).toBeInTheDocument()
   })

@@ -49,7 +49,7 @@ export default function CharacterForm() {
       if (worldId) {
         navigate(`/world/${worldId}`)
       } else {
-        navigate('/characters')
+        navigate('/main')
       }
     } catch (err) {
       setError(err.message || 'Failed to create character')
@@ -62,7 +62,7 @@ export default function CharacterForm() {
     <Layout>
       <form className="card stack" onSubmit={onSubmit} style={{ maxWidth: 560 }}>
         <div className="stack-tight">
-          <Link to={worldId ? `/world/${worldId}` : '/characters'} className="small">
+          <Link to={worldId ? `/world/${worldId}` : '/main'} className="small">
             ← Back
           </Link>
           <h1>New character</h1>

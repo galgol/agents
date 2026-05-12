@@ -20,21 +20,21 @@ test.describe('auth flow', () => {
     await page.getByLabel('Username').fill(account.username)
     await page.getByLabel('Password').fill(account.password)
     await page.getByRole('button', { name: 'Sign in' }).click()
-    await expect(page).toHaveURL(/\/characters$/)
+    await expect(page).toHaveURL(/\/main$/)
     await expect(page.getByRole('heading', { name: /Your worlds/ })).toBeVisible()
   })
 
-  test('sign out returns to /login and protects /characters again', async ({ page, account }) => {
+  test('sign out returns to /login and protects /main again', async ({ page, account }) => {
     await page.goto('/login')
     await page.getByLabel('Username').fill(account.username)
     await page.getByLabel('Password').fill(account.password)
     await page.getByRole('button', { name: 'Sign in' }).click()
-    await expect(page).toHaveURL(/\/characters$/)
+    await expect(page).toHaveURL(/\/main$/)
 
     await page.getByRole('button', { name: 'Sign out' }).click()
     await expect(page).toHaveURL(/\/login$/)
 
-    await page.goto('/characters')
+    await page.goto('/main')
     await expect(page).toHaveURL(/\/login$/)
   })
 })
