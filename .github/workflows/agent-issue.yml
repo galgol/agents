@@ -1,0 +1,62 @@
+name: Cursor implement issue
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  authorize:
+    # author_association alone conflates org members and read-only collaborators
+    # with users who can push, so check the real repo permission via the API.
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      allowed: ${{ steps.check.outputs.allowed }}
+    steps:
+      - name: Check repo permission for issue author
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AUTHOR: ${{ github.event.issue.user.login }}
+        run: |
+          set -euo pipefail
+          perm=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            "repos/$GITHUB_REPOSITORY/collaborators/$AUTHOR/permission" \
+            --jq .permission 2>/dev/null || echo none)
+          echo "author=$AUTHOR permission=$perm"
+          if [[ "$perm" == "admin" || "$perm" == "maintain" || "$perm" == "write" ]]; then
+            echo "allowed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "allowed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  implement:
+    needs: authorize
+    if: needs.authorize.outputs.allowed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: read
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+
+      - name: Install Cursor SDK
+        run: |
+          npm init -y
+          npm install @cursor/sdk tsx
+
+      - name: Run Cursor implementation agent
+        env:
+          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: npx tsx .github/scripts/cursor-implement-issue.ts
