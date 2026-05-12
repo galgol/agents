@@ -81,6 +81,16 @@ describe('<Library />', () => {
     expect(screen.getByText(/No characters yet/)).toBeInTheDocument()
   })
 
+  it('shows the shelf headline and subtitle copy', async () => {
+    fetch.mockResolvedValueOnce(jsonResponse([])).mockResolvedValueOnce(jsonResponse([]))
+    renderLibrary()
+    expect(
+      await screen.findByRole('heading', { level: 1, name: /your personal shelf/i }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Your worlds & characters')).toBeInTheDocument()
+    expect(screen.getByText('Everything you have created in one place.')).toBeInTheDocument()
+  })
+
   it('shows an error when fetching worlds fails', async () => {
     fetch
       .mockResolvedValueOnce(jsonResponse({ detail: 'boom' }, 500))
