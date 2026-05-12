@@ -8,6 +8,26 @@ describe('<CharacterCard />', () => {
     expect(screen.getByRole('heading', { name: 'Aria' })).toBeInTheDocument()
   })
 
+  it('renders appearance details when present', () => {
+    render(
+      <CharacterCard
+        character={{
+          id: 1,
+          name: 'Aria',
+          age: 28,
+          gender: 'woman',
+          hair: 'black',
+          eyes: 'green',
+          height: '170 cm',
+          body_figure: 'athletic',
+        }}
+      />,
+    )
+    expect(
+      screen.getByText('28 yrs · woman · black · green · 170 cm · athletic'),
+    ).toBeInTheDocument()
+  })
+
   it('renders traits and bio when present', () => {
     render(
       <CharacterCard

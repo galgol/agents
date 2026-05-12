@@ -12,27 +12,45 @@ export default function CharacterForm() {
   const [name, setName] = useState('')
   const [bio, setBio] = useState('')
   const [traits, setTraits] = useState('')
+  const [age, setAge] = useState('')
+  const [gender, setGender] = useState('')
+  const [hair, setHair] = useState('')
+  const [eyes, setEyes] = useState('')
+  const [height, setHeight] = useState('')
+  const [bodyFigure, setBodyFigure] = useState('')
+  const [characteristics, setCharacteristics] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
 
   async function onSubmit(event) {
     event.preventDefault()
-    if (!worldId) {
-      setError('Missing world. Open this form from a world page.')
-      return
-    }
     setError(null)
     setSubmitting(true)
     try {
-      await api.post('/characters', {
-        world_id: worldId,
+      const ageTrim = age.trim()
+      const ageNum =
+        ageTrim === '' ? null : Number.parseInt(ageTrim, 10)
+      const body = {
+        ...(worldId ? { world_id: worldId } : {}),
         name,
-        bio,
-        traits,
+        bio: bio.trim() || null,
+        traits: traits.trim() || null,
         image_url: imageUrl || null,
-      })
-      navigate(`/world/${worldId}`)
+        age: ageNum != null && !Number.isNaN(ageNum) ? ageNum : null,
+        gender: gender.trim() || null,
+        hair: hair.trim() || null,
+        eyes: eyes.trim() || null,
+        height: height.trim() || null,
+        body_figure: bodyFigure.trim() || null,
+        characteristics: characteristics.trim() || null,
+      }
+      await api.post('/characters', body)
+      if (worldId) {
+        navigate(`/world/${worldId}`)
+      } else {
+        navigate('/characters')
+      }
     } catch (err) {
       setError(err.message || 'Failed to create character')
     } finally {
@@ -44,7 +62,7 @@ export default function CharacterForm() {
     <Layout>
       <form className="card stack" onSubmit={onSubmit} style={{ maxWidth: 560 }}>
         <div className="stack-tight">
-          <Link to={worldId ? `/world/${worldId}` : '/library'} className="small">
+          <Link to={worldId ? `/world/${worldId}` : '/characters'} className="small">
             ← Back
           </Link>
           <h1>New character</h1>
@@ -79,6 +97,81 @@ export default function CharacterForm() {
             value={traits}
             onChange={(e) => setTraits(e.target.value)}
             placeholder="e.g. brave, cunning, loyal"
+          />
+        </div>
+
+        <div className="field">
+          <label className="label" htmlFor="char-age">Age</label>
+          <input
+            id="char-age"
+            className="input"
+            type="number"
+            min={0}
+            max={200}
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+          />
+        </div>
+
+        <div className="field">
+          <label className="label" htmlFor="char-gender">Gender</label>
+          <input
+            id="char-gender"
+            className="input"
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+          />
+        </div>
+
+        <div className="field">
+          <label className="label" htmlFor="char-hair">Hair</label>
+          <input
+            id="char-hair"
+            className="input"
+            value={hair}
+            onChange={(e) => setHair(e.target.value)}
+          />
+        </div>
+
+        <div className="field">
+          <label className="label" htmlFor="char-eyes">Eyes</label>
+          <input
+            id="char-eyes"
+            className="input"
+            value={eyes}
+            onChange={(e) => setEyes(e.target.value)}
+          />
+        </div>
+
+        <div className="field">
+          <label className="label" htmlFor="char-height">Height</label>
+          <input
+            id="char-height"
+            className="input"
+            value={height}
+            onChange={(e) => setHeight(e.target.value)}
+            placeholder="e.g. 5'8&quot; or 172 cm"
+          />
+        </div>
+
+        <div className="field">
+          <label className="label" htmlFor="char-body">Body figure</label>
+          <input
+            id="char-body"
+            className="input"
+            value={bodyFigure}
+            onChange={(e) => setBodyFigure(e.target.value)}
+          />
+        </div>
+
+        <div className="field">
+          <label className="label" htmlFor="char-characteristics">Characteristics</label>
+          <textarea
+            id="char-characteristics"
+            className="textarea"
+            value={characteristics}
+            onChange={(e) => setCharacteristics(e.target.value)}
+            placeholder="Personality, habits, speech, etc."
           />
         </div>
 

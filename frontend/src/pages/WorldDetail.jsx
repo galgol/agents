@@ -41,7 +41,7 @@ export default function WorldDetail() {
       <div className="stack">
         <div className="spread">
           <div className="stack-tight">
-            <Link to="/library" className="small">← Library</Link>
+            <Link to="/characters" className="small">← Home</Link>
             <h1>{world?.name || 'World'}</h1>
             {world?.description && (
               <p className="muted">{world.description}</p>

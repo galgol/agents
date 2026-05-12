@@ -6,7 +6,7 @@ import { isAuthenticated, setToken } from '../auth.js'
 export default function Login() {
   const navigate = useNavigate()
   const location = useLocation()
-  const redirectTo = location.state?.from?.pathname || '/library'
+  const redirectTo = location.state?.from?.pathname || '/characters'
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -53,7 +53,7 @@ export default function Login() {
       <form className="card stack" style={{ width: 360 }} onSubmit={onSubmit}>
         <div className="stack-tight">
           <h1>Sign in</h1>
-          <p className="muted small">Continue to your library.</p>
+          <p className="muted small">Continue to your worlds and characters.</p>
         </div>
 
         <div className="field">

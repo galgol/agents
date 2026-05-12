@@ -35,11 +35,18 @@ class WorldOut(BaseModel):
 
 
 class CharacterCreate(BaseModel):
-    world_id: int
+    world_id: int | None = None
     name: str = Field(min_length=1, max_length=120)
     bio: str | None = None
     traits: str | None = None
     image_url: str | None = None
+    age: int | None = Field(default=None, ge=0, le=200)
+    gender: str | None = Field(default=None, max_length=64)
+    hair: str | None = Field(default=None, max_length=200)
+    eyes: str | None = Field(default=None, max_length=200)
+    height: str | None = Field(default=None, max_length=200)
+    body_figure: str | None = Field(default=None, max_length=200)
+    characteristics: str | None = None
 
 
 class CharacterOut(BaseModel):
@@ -51,6 +58,13 @@ class CharacterOut(BaseModel):
     bio: str | None
     traits: str | None
     image_url: str | None
+    age: int | None
+    gender: str | None
+    hair: str | None
+    eyes: str | None
+    height: str | None
+    body_figure: str | None
+    characteristics: str | None
 
 
 class UploadOut(BaseModel):
