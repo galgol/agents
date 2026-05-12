@@ -1,6 +1,12 @@
 import { Agent } from "@cursor/sdk";
 import { execFileSync } from "node:child_process";
 
+// @cursor/sdk can attach multiple abort listeners in one run; Node warns spuriously in short CI jobs.
+process.on("warning", (w) => {
+  if (w.name === "MaxListenersExceededWarning") return;
+  console.warn(w);
+});
+
 const MAX_DIFF_CHARS = 200_000;
 
 function git(args: string[]): string {
