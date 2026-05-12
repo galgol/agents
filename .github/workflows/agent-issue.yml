@@ -6,6 +6,10 @@ on:
 
 jobs:
   implement:
+    # Only trigger for users with write access to the repo.
+    # author_association is one of: OWNER, MEMBER, COLLABORATOR, CONTRIBUTOR,
+    # FIRST_TIME_CONTRIBUTOR, FIRST_TIMER, MANNEQUIN, NONE.
+    if: contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.issue.author_association)
     runs-on: ubuntu-latest
     permissions:
       contents: read
