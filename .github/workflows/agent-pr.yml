@@ -1,0 +1,34 @@
+name: Cursor PR code review
+
+on:
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    env:
+      PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      CURSOR_REVIEW_MODEL: ${{ vars.CURSOR_REVIEW_MODEL }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+
+      - name: Install Cursor SDK
+        run: |
+          npm init -y
+          npm install @cursor/sdk tsx
+
+      - name: Run Cursor PR review
+        env:
+          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+        run: npx tsx .github/scripts/cursor-review-pr.ts
