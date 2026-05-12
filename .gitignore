@@ -21,3 +21,9 @@ htmlcov/
 # ===== Node / Frontend =====
 node_modules/
 dist/
+coverage/
+# Playwright
+playwright-report/
+test-results/
+# E2E sqlite db
+e2e-app.db

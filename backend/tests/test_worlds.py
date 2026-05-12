@@ -51,3 +51,64 @@ def test_create_world_validation_empty_name(client: TestClient) -> None:
     token = register_and_login(client)
     r = client.post("/worlds", json={"name": ""}, headers=auth_headers(token))
     assert r.status_code == 422
+
+
+def test_create_world_validation_missing_name(client: TestClient) -> None:
+    token = register_and_login(client)
+    r = client.post("/worlds", json={"description": "no name"}, headers=auth_headers(token))
+    assert r.status_code == 422
+
+
+def test_create_world_validation_long_name(client: TestClient) -> None:
+    token = register_and_login(client)
+    r = client.post("/worlds", json={"name": "x" * 121}, headers=auth_headers(token))
+    assert r.status_code == 422
+
+
+def test_create_world_with_only_name_uses_null_defaults(client: TestClient) -> None:
+    token = register_and_login(client)
+    r = client.post("/worlds", json={"name": "Minimal"}, headers=auth_headers(token))
+    assert r.status_code == 201
+    body = r.json()
+    assert body["name"] == "Minimal"
+    assert body["description"] is None
+    assert body["cover_image_url"] is None
+
+
+def test_create_world_with_explicit_null_optionals(client: TestClient) -> None:
+    token = register_and_login(client)
+    r = client.post(
+        "/worlds",
+        json={"name": "Nulled", "description": None, "cover_image_url": None},
+        headers=auth_headers(token),
+    )
+    assert r.status_code == 201
+    body = r.json()
+    assert body["description"] is None
+    assert body["cover_image_url"] is None
+
+
+def test_create_world_invalid_field_type(client: TestClient) -> None:
+    token = register_and_login(client)
+    r = client.post("/worlds", json={"name": 123}, headers=auth_headers(token))
+    assert r.status_code == 422
+
+
+def test_list_worlds_preserves_creation_order(client: TestClient) -> None:
+    token = register_and_login(client)
+    for name in ("Alpha", "Beta", "Gamma"):
+        client.post("/worlds", json={"name": name}, headers=auth_headers(token))
+    items = client.get("/worlds", headers=auth_headers(token)).json()
+    assert [w["name"] for w in items] == ["Alpha", "Beta", "Gamma"]
+
+
+def test_create_world_rejects_unknown_extra_fields_safely(client: TestClient) -> None:
+    """Extra fields are ignored by default; ensure they do not leak into the response."""
+    token = register_and_login(client)
+    r = client.post(
+        "/worlds",
+        json={"name": "Eldoria", "secret": "should-be-ignored"},
+        headers=auth_headers(token),
+    )
+    assert r.status_code == 201
+    assert "secret" not in r.json()

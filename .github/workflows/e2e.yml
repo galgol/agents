@@ -1,0 +1,60 @@
+name: fullstack E2E Tests
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Pull repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Install Python (needed by the backend that Playwright boots)
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Install backend dependencies
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      # Install Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # Install frontend dependencies (npm install re-resolves OS-specific optional bindings)
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm install --no-audit --no-fund
+
+      # Install Playwright browsers + OS deps
+      - name: Install Playwright browser
+        working-directory: frontend
+        run: npx playwright install --with-deps chromium
+
+      # Run Playwright tests (config auto-starts uvicorn + vite via webServer)
+      - name: Run Playwright tests
+        working-directory: frontend
+        run: npm run test:e2e
+
+      # Upload the HTML report on failure to make debugging easier
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: frontend/playwright-report/
+          retention-days: 7

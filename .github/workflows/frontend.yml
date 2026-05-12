@@ -1,0 +1,34 @@
+name: frontend Tests
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Pull repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Install Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # Install dependencies (npm install re-resolves OS-specific optional bindings)
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm install --no-audit --no-fund
+
+      # Run Vitest unit + component tests
+      - name: Run Vitest
+        working-directory: frontend
+        run: npm test

@@ -86,3 +86,13 @@ Before approving any change:
 - [ ] Edge cases are covered
 - [ ] No regressions detected
 - [ ] Tests follow project conventions
+
+---
+
+## 🕳️ Known Coverage Gaps
+
+- **`GET /health` in `main.py`** — no test (trivial but uncovered).
+- **Frontend** — no unit, component, or E2E tests; only ESLint.
+- **Upload** — router allows JPEG, GIF, WebP (`ALLOWED_CONTENT_TYPES` / `ALLOWED_EXTENSIONS`); tests only exercise PNG.
+- **Broader API / validation** — no extra cases (e.g. invalid register payloads beyond short password, optional world fields, character field validation) unless you add them for policy; current routers are small, so coverage is mostly "happy path + a few errors."
+- **Full-stack / browser** — nothing that hits the Vite app + proxy + real server together.

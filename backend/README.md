@@ -34,5 +34,7 @@ Static images are served from `/static/images/`.
 From the repo root:
 
 ```bash
-pytest backend/tests
+python -m pytest backend/tests
 ```
+
+Tests use an in-memory SQLite database and an isolated static upload directory (see `backend/tests/conftest.py`); no running server is required.

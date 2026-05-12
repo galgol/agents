@@ -85,3 +85,90 @@ def test_get_unknown_character_returns_404(client: TestClient) -> None:
     token = register_and_login(client)
     r = client.get("/characters/9999", headers=auth_headers(token))
     assert r.status_code == 404
+
+
+def test_create_character_validation_empty_name(client: TestClient) -> None:
+    token = register_and_login(client)
+    world_id = _create_world(client, token)
+    r = client.post(
+        "/characters",
+        json={"world_id": world_id, "name": ""},
+        headers=auth_headers(token),
+    )
+    assert r.status_code == 422
+
+
+def test_create_character_validation_long_name(client: TestClient) -> None:
+    token = register_and_login(client)
+    world_id = _create_world(client, token)
+    r = client.post(
+        "/characters",
+        json={"world_id": world_id, "name": "x" * 121},
+        headers=auth_headers(token),
+    )
+    assert r.status_code == 422
+
+
+def test_create_character_validation_missing_world_id(client: TestClient) -> None:
+    token = register_and_login(client)
+    r = client.post(
+        "/characters",
+        json={"name": "Aria"},
+        headers=auth_headers(token),
+    )
+    assert r.status_code == 422
+
+
+def test_create_character_validation_missing_name(client: TestClient) -> None:
+    token = register_and_login(client)
+    world_id = _create_world(client, token)
+    r = client.post(
+        "/characters",
+        json={"world_id": world_id},
+        headers=auth_headers(token),
+    )
+    assert r.status_code == 422
+
+
+def test_create_character_validation_world_id_wrong_type(client: TestClient) -> None:
+    token = register_and_login(client)
+    r = client.post(
+        "/characters",
+        json={"world_id": "not-an-int", "name": "Aria"},
+        headers=auth_headers(token),
+    )
+    assert r.status_code == 422
+
+
+def test_create_character_with_only_required_fields_has_null_optionals(client: TestClient) -> None:
+    token = register_and_login(client)
+    world_id = _create_world(client, token)
+    r = client.post(
+        "/characters",
+        json={"world_id": world_id, "name": "Minimal"},
+        headers=auth_headers(token),
+    )
+    assert r.status_code == 201
+    body = r.json()
+    assert body["bio"] is None
+    assert body["traits"] is None
+    assert body["image_url"] is None
+
+
+def test_list_characters_missing_world_id_query(client: TestClient) -> None:
+    token = register_and_login(client)
+    r = client.get("/characters", headers=auth_headers(token))
+    assert r.status_code == 422
+
+
+def test_cannot_create_character_in_another_users_world(client: TestClient) -> None:
+    alice_token = register_and_login(client, "alice", "secret123")
+    bob_token = register_and_login(client, "bob", "secret123")
+    alice_world = _create_world(client, alice_token, "Alice World")
+
+    r = client.post(
+        "/characters",
+        json={"world_id": alice_world, "name": "Intruder"},
+        headers=auth_headers(bob_token),
+    )
+    assert r.status_code == 404
