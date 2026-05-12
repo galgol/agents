@@ -6,7 +6,7 @@ import { isAuthenticated, setToken } from '../auth.js'
 export default function Login() {
   const navigate = useNavigate()
   const location = useLocation()
-  const redirectTo = location.state?.from?.pathname || '/characters'
+  const redirectTo = location.state?.from?.pathname || '/main'
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')

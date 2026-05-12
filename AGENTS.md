@@ -11,7 +11,7 @@ This is a two-service monorepo: a **FastAPI backend** (Python) and a **React + V
 | Backend | `uvicorn backend.main:app --reload` | 8000 | `/workspace` (repo root) |
 | Frontend | `npm run dev` | 5173 | `/workspace/frontend` |
 
-The backend must be started from the repo root so that `backend.main:app` resolves correctly. The Vite dev server proxies `/auth`, `/worlds`, `/upload`, and `/static` to `http://localhost:8000`. Requests to `/characters` are proxied only when they are not browser page loads (`Accept` does not include `text/html`), so `GET /characters` from `fetch` hits the API while opening `http://localhost:5173/characters` in the browser loads the React route.
+The backend must be started from the repo root so that `backend.main:app` resolves correctly. The Vite dev server proxies `/auth`, `/worlds`, `/upload`, and `/static` to `http://localhost:8000`. Requests to `/characters` are proxied only when they are not browser page loads (`Accept` does not include `text/html`), so `GET /characters` from `fetch` hits the API while the signed-in library home is the React route at `http://localhost:5173/main` (navigating to `/characters` in the browser redirects to `/main`).
 
 ### Testing
 

@@ -21,7 +21,7 @@ function renderForm(initial = '/character/new?world_id=5') {
       <Routes>
         <Route path="/character/new" element={<CharacterForm />} />
         <Route path="/world/:id" element={<div>World page</div>} />
-        <Route path="/characters" element={<div>Home hub</div>} />
+        <Route path="/main" element={<div>Home hub</div>} />
       </Routes>
     </MemoryRouter>,
   )
@@ -91,7 +91,7 @@ describe('<CharacterForm />', () => {
 
   it('renders the back link to the home hub when no world_id', () => {
     renderForm('/character/new')
-    expect(screen.getByRole('link', { name: /Back/ })).toHaveAttribute('href', '/characters')
+    expect(screen.getByRole('link', { name: /Back/ })).toHaveAttribute('href', '/main')
   })
 
   it('renders the back link to the world when world_id is set', () => {

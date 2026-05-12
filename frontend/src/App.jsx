@@ -10,12 +10,13 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route element={<ProtectedRoute />}>
-        <Route path="/characters" element={<Library />} />
-        <Route path="/library" element={<Navigate to="/characters" replace />} />
+        <Route path="/main" element={<Library />} />
+        <Route path="/characters" element={<Navigate to="/main" replace />} />
+        <Route path="/library" element={<Navigate to="/main" replace />} />
         <Route path="/world/:id" element={<WorldDetail />} />
         <Route path="/character/new" element={<CharacterForm />} />
       </Route>
-      <Route path="*" element={<Navigate to="/characters" replace />} />
+      <Route path="*" element={<Navigate to="/main" replace />} />
     </Routes>
   )
 }
