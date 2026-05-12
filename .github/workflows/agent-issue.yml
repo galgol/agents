@@ -5,11 +5,36 @@ on:
     types: [opened]
 
 jobs:
+  authorize:
+    # author_association alone conflates org members and read-only collaborators
+    # with users who can push, so check the real repo permission via the API.
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      allowed: ${{ steps.check.outputs.allowed }}
+    steps:
+      - name: Check repo permission for issue author
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AUTHOR: ${{ github.event.issue.user.login }}
+        run: |
+          set -euo pipefail
+          perm=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            "repos/$GITHUB_REPOSITORY/collaborators/$AUTHOR/permission" \
+            --jq .permission 2>/dev/null || echo none)
+          echo "author=$AUTHOR permission=$perm"
+          if [[ "$perm" == "admin" || "$perm" == "maintain" || "$perm" == "write" ]]; then
+            echo "allowed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "allowed=false" >> "$GITHUB_OUTPUT"
+          fi
+
   implement:
-    # Only trigger for users with write access to the repo.
-    # author_association is one of: OWNER, MEMBER, COLLABORATOR, CONTRIBUTOR,
-    # FIRST_TIME_CONTRIBUTOR, FIRST_TIMER, MANNEQUIN, NONE.
-    if: contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.issue.author_association)
+    needs: authorize
+    if: needs.authorize.outputs.allowed == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
