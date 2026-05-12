@@ -1,0 +1,33 @@
+name: Cursor implement issue
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  implement:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: read
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+
+      - name: Install Cursor SDK
+        run: |
+          npm init -y
+          npm install @cursor/sdk tsx
+
+      - name: Run Cursor implementation agent
+        env:
+          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: npx tsx .github/scripts/cursor-implement-issue.ts
