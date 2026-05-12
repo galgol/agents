@@ -21,7 +21,7 @@ function renderForm(initial = '/character/new?world_id=5') {
       <Routes>
         <Route path="/character/new" element={<CharacterForm />} />
         <Route path="/world/:id" element={<div>World page</div>} />
-        <Route path="/library" element={<div>Library page</div>} />
+        <Route path="/characters" element={<div>Home hub</div>} />
       </Routes>
     </MemoryRouter>,
   )
@@ -55,20 +55,43 @@ describe('<CharacterForm />', () => {
       bio: 'A knight',
       traits: 'brave',
       image_url: null,
+      age: null,
+      gender: null,
+      hair: null,
+      eyes: null,
+      height: null,
+      body_figure: null,
+      characteristics: null,
     })
   })
 
-  it('shows an error when world_id is missing from the URL', async () => {
+  it('creates a character without a world and navigates to the home hub', async () => {
+    fetch.mockResolvedValueOnce(jsonResponse({ id: 1, world_id: 99, name: 'Aria' }, 201))
     renderForm('/character/new')
     await userEvent.type(screen.getByLabelText('Name'), 'Aria')
     await userEvent.click(screen.getByRole('button', { name: 'Create character' }))
-    expect(await screen.findByText(/Missing world/)).toBeInTheDocument()
-    expect(fetch).not.toHaveBeenCalled()
+    await waitFor(() => expect(screen.getByText('Home hub')).toBeInTheDocument())
+
+    const [url, opts] = fetch.mock.calls[0]
+    expect(url).toBe('/characters')
+    expect(JSON.parse(opts.body)).toEqual({
+      name: 'Aria',
+      bio: null,
+      traits: null,
+      image_url: null,
+      age: null,
+      gender: null,
+      hair: null,
+      eyes: null,
+      height: null,
+      body_figure: null,
+      characteristics: null,
+    })
   })
 
-  it('renders the back link to the library when no world_id', () => {
+  it('renders the back link to the home hub when no world_id', () => {
     renderForm('/character/new')
-    expect(screen.getByRole('link', { name: /Back/ })).toHaveAttribute('href', '/library')
+    expect(screen.getByRole('link', { name: /Back/ })).toHaveAttribute('href', '/characters')
   })
 
   it('renders the back link to the world when world_id is set', () => {

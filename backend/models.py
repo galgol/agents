@@ -36,5 +36,12 @@ class Character(Base):
     bio: Mapped[str | None] = mapped_column(Text, nullable=True)
     traits: Mapped[str | None] = mapped_column(Text, nullable=True)
     image_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    age: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    gender: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    hair: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    eyes: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    height: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    body_figure: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    characteristics: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     world: Mapped[World] = relationship(back_populates="characters")

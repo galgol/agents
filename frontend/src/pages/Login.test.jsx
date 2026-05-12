@@ -20,7 +20,7 @@ function renderLogin() {
     <MemoryRouter initialEntries={['/login']}>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/library" element={<div>Library page</div>} />
+        <Route path="/characters" element={<div>Home hub</div>} />
       </Routes>
     </MemoryRouter>,
   )
@@ -49,7 +49,7 @@ describe('<Login />', () => {
     await userEvent.type(screen.getByLabelText('Password'), 'secret123')
     await userEvent.click(screen.getByRole('button', { name: 'Sign in' }))
 
-    await waitFor(() => expect(screen.getByText('Library page')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('Home hub')).toBeInTheDocument())
     expect(getToken()).toBe('tok-123')
 
     const [url, opts] = fetch.mock.calls[0]

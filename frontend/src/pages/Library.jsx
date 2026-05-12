@@ -1,24 +1,35 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import Layout from '../components/Layout.jsx'
 import WorldCard from '../components/WorldCard.jsx'
+import CharacterCard from '../components/CharacterCard.jsx'
 import ImageUpload from '../components/ImageUpload.jsx'
 import { api } from '../api.js'
 
 export default function Library() {
   const [worlds, setWorlds] = useState([])
+  const [characters, setCharacters] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [creating, setCreating] = useState(false)
 
+  const worldNameById = useMemo(() => {
+    const m = new Map()
+    for (const w of worlds) m.set(w.id, w.name)
+    return m
+  }, [worlds])
+
   useEffect(() => {
     let cancelled = false
-    api
-      .get('/worlds')
-      .then((data) => {
-        if (!cancelled) setWorlds(Array.isArray(data) ? data : [])
+    Promise.all([api.get('/worlds'), api.get('/characters')])
+      .then(([worldsData, charactersData]) => {
+        if (!cancelled) {
+          setWorlds(Array.isArray(worldsData) ? worldsData : [])
+          setCharacters(Array.isArray(charactersData) ? charactersData : [])
+        }
       })
       .catch((err) => {
-        if (!cancelled) setError(err.message || 'Failed to load worlds')
+        if (!cancelled) setError(err.message || 'Failed to load library')
       })
       .finally(() => {
         if (!cancelled) setLoading(false)
@@ -38,17 +49,22 @@ export default function Library() {
       <div className="stack">
         <div className="spread">
           <div className="stack-tight">
-            <h1>Library</h1>
-            <p className="muted small">Your worlds and the stories within.</p>
+            <h1>Your worlds &amp; characters</h1>
+            <p className="muted small">Everything you have created in one place.</p>
           </div>
           {!creating && (
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={() => setCreating(true)}
-            >
-              New world
-            </button>
+            <div className="row" style={{ gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+              <Link to="/character/new" className="btn btn-primary">
+                New character
+              </Link>
+              <button
+                type="button"
+                className="btn"
+                onClick={() => setCreating(true)}
+              >
+                New world
+              </button>
+            </div>
           )}
         </div>
 
@@ -63,13 +79,43 @@ export default function Library() {
           <p className="muted">Loading…</p>
         ) : error ? (
           <div className="error">{error}</div>
-        ) : worlds.length === 0 ? (
-          <div className="empty">No worlds yet. Create your first one.</div>
         ) : (
-          <div className="grid">
-            {worlds.map((w) => (
-              <WorldCard key={w.id} world={w} />
-            ))}
+          <div className="stack" style={{ gap: '2rem' }}>
+            <section className="stack">
+              <h2 style={{ fontSize: '1.125rem', margin: 0, fontWeight: 600 }}>
+                Worlds
+              </h2>
+              {worlds.length === 0 ? (
+                <div className="empty">No worlds yet. Create your first one.</div>
+              ) : (
+                <div className="grid">
+                  {worlds.map((w) => (
+                    <WorldCard key={w.id} world={w} />
+                  ))}
+                </div>
+              )}
+            </section>
+
+            <section className="stack">
+              <h2 style={{ fontSize: '1.125rem', margin: 0, fontWeight: 600 }}>
+                Characters
+              </h2>
+              {characters.length === 0 ? (
+                <div className="empty">
+                  No characters yet. Use &quot;New character&quot; above to add one.
+                </div>
+              ) : (
+                <div className="grid">
+                  {characters.map((c) => (
+                    <CharacterCard
+                      key={c.id}
+                      character={c}
+                      subtitle={worldNameById.get(c.world_id) || undefined}
+                    />
+                  ))}
+                </div>
+              )}
+            </section>
           </div>
         )}
       </div>
