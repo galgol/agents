@@ -25,5 +25,6 @@ coverage/
 # Playwright
 playwright-report/
 test-results/
-# E2E sqlite db
+# SQLite databases
+*.db
 e2e-app.db

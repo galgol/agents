@@ -91,8 +91,8 @@ Before approving any change:
 
 ## 🕳️ Known Coverage Gaps
 
-- **`GET /health` in `main.py`** — no test (trivial but uncovered).
-- **Frontend** — no unit, component, or E2E tests; only ESLint.
-- **Upload** — router allows JPEG, GIF, WebP (`ALLOWED_CONTENT_TYPES` / `ALLOWED_EXTENSIONS`); tests only exercise PNG.
-- **Broader API / validation** — no extra cases (e.g. invalid register payloads beyond short password, optional world fields, character field validation) unless you add them for policy; current routers are small, so coverage is mostly "happy path + a few errors."
-- **Full-stack / browser** — nothing that hits the Vite app + proxy + real server together.
+- **`GET /health` in `main.py`** — covered by `test_health.py`.
+- **Frontend** — Vitest unit/component tests and Playwright E2E tests added.
+- **Upload** — JPEG, GIF, WebP now covered via parametrized tests in `test_upload.py`.
+- **Broader API / validation** — edge-case tests added for auth, worlds, and characters.
+- **Full-stack / browser** — Playwright E2E specs cover auth flow, world/character CRUD, and proxy reachability.

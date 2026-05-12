@@ -35,8 +35,8 @@ function main() {
 ## Project standards (read these files if needed, then judge the PR against them)
 - .cursor/rules/core-rules.mdc — stability, layers, scope, consistency
 - AGENTS.md — repo layout and conventions
-- .cursor/skills/SKILL.md — minimal diff, match existing style
-- .cursor/skills/develop-base/SKILL.md — frontend/UI consistency (when JS/TS/CSS in PR)
+- .cursor/skills/develop-base/SKILL.md — minimal diff, match existing style
+- .cursor/skills/ui/SKILL.md — frontend/UI consistency (when JS/TS/CSS in PR)
 
 ## Changed paths
 ${files || "(none)"}
