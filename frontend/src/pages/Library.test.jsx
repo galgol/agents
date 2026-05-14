@@ -85,10 +85,11 @@ describe('<Library />', () => {
     fetch.mockResolvedValueOnce(jsonResponse([])).mockResolvedValueOnce(jsonResponse([]))
     renderLibrary()
     expect(
-      await screen.findByRole('heading', { level: 1, name: /your personal shelf/i }),
+      await screen.findByRole('heading', { level: 1, name: 'Personal Shelf' }),
     ).toBeInTheDocument()
-    expect(screen.getByText('Your worlds & characters')).toBeInTheDocument()
-    expect(screen.getByText('Everything you have created in one place.')).toBeInTheDocument()
+    expect(
+      screen.getByText('Your worlds & characters : everything you have created in one place.'),
+    ).toBeInTheDocument()
   })
 
   it('shows an error when fetching worlds fails', async () => {
