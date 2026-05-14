@@ -1,7 +1,7 @@
 import { Agent } from "@cursor/sdk";
 
 const prompt = `Code review the changes in the latest commit based on the rules in
-.cursor/skills/SKILL.md and summarize the main 3 changes needed.`;
+.cursor/skills/develop-base/SKILL.md and summarize the main 3 changes needed.`;
 
 async function main() {
   const result = await Agent.prompt(prompt, {
