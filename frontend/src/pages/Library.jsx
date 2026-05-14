@@ -49,9 +49,10 @@ export default function Library() {
       <div className="stack">
         <div className="spread">
           <div className="stack-tight">
-            <h1>your personal shelf</h1>
-            <p className="muted small">Your worlds &amp; characters</p>
-            <p className="muted small">Everything you have created in one place.</p>
+            <h1>Personal Shelf</h1>
+            <p className="muted small">
+              Your worlds &amp; characters : everything you have created in one place.
+            </p>
           </div>
           {!creating && (
             <div className="row" style={{ gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
