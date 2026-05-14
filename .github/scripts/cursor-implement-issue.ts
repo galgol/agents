@@ -26,7 +26,7 @@ async function main() {
   try {
     const result = await Agent.prompt(prompt, {
       apiKey: CURSOR_API_KEY!,
-      model: { id: "composer-2" },
+      model: { id: "gpt-5.3-codex" },
       cloud: {
         repos: [{ url: REPO_URL!, startingRef: DEFAULT_BRANCH ?? "main" }],
         autoCreatePR: true,

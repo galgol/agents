@@ -6,7 +6,7 @@ const prompt = `Code review the changes in the latest commit based on the rules 
 async function main() {
   const result = await Agent.prompt(prompt, {
     apiKey: process.env.CURSOR_API_KEY!,
-    model: { id: "composer-2" }, // see note below about your model choice
+    model: { id: "claude-sonnet-4-6" }, // see note below about your model choice
     local: { cwd: process.cwd() },
   });
 

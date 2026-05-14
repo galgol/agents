@@ -34,7 +34,7 @@ function main() {
   }
 
   const modelId =
-    process.env.CURSOR_REVIEW_MODEL?.trim() || "gpt-5.3-codex";
+    process.env.CURSOR_REVIEW_MODEL?.trim() || "claude-sonnet-4-6"; 
 
   const prompt = `You are reviewing a pull request in a checked-out repo (cwd is the full tree). The agent can read any file under cwd.
 
