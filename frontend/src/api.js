@@ -1,5 +1,7 @@
 import { clearToken, getToken } from './auth.js'
 
+const API_BASE = (import.meta.env?.VITE_API_BASE_URL ?? '').replace(/\/$/, '')
+
 export class ApiError extends Error {
   constructor(message, status) {
     super(message)
@@ -13,7 +15,8 @@ async function request(path, { method = 'GET', body, headers, isForm } = {}) {
   if (token) finalHeaders.Authorization = `Bearer ${token}`
   if (body && !isForm) finalHeaders['Content-Type'] = 'application/json'
 
-  const res = await fetch(path, {
+  const url = /^https?:\/\//.test(path) ? path : `${API_BASE}${path}`
+  const res = await fetch(url, {
     method,
     headers: finalHeaders,
     body: body == null ? undefined : isForm ? body : JSON.stringify(body),
