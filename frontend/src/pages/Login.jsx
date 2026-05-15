@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { ApiError } from '../api.js'
+import { API_BASE, ApiError } from '../api.js'
 import { isAuthenticated, setToken } from '../auth.js'
 
 export default function Login() {
@@ -24,7 +24,7 @@ export default function Login() {
     setSubmitting(true)
     try {
       const body = new URLSearchParams({ username, password })
-      const res = await fetch('/auth/login', {
+      const res = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body,
