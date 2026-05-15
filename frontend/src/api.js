@@ -1,6 +1,6 @@
 import { clearToken, getToken } from './auth.js'
 
-const API_BASE = (import.meta.env?.VITE_API_BASE_URL ?? '').replace(/\/$/, '')
+export const API_BASE = (import.meta.env?.VITE_API_BASE_URL ?? '').replace(/\/$/, '')
 
 export class ApiError extends Error {
   constructor(message, status) {
