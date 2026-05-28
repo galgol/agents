@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 function appearanceLine(character) {
   const parts = [
     character.age != null && character.age !== '' ? `${character.age} yrs` : null,
@@ -13,7 +15,11 @@ function appearanceLine(character) {
 export default function CharacterCard({ character, subtitle }) {
   const appearance = appearanceLine(character)
   return (
-    <article className="card stack-tight">
+    <Link
+      to={`/character/${character.id}`}
+      className="card stack-tight"
+      style={{ textDecoration: 'none' }}
+    >
       {subtitle ? <p className="muted small" style={{ margin: 0 }}>{subtitle}</p> : null}
       <div className="row">
         {character.image_url ? (
@@ -33,6 +39,6 @@ export default function CharacterCard({ character, subtitle }) {
         <p className="small">{character.characteristics}</p>
       ) : null}
       {character.bio && <p className="small">{character.bio}</p>}
-    </article>
+    </Link>
   )
 }

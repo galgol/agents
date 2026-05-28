@@ -5,6 +5,7 @@ import Signup from './pages/Signup.jsx'
 import Library from './pages/Library.jsx'
 import WorldDetail from './pages/WorldDetail.jsx'
 import CharacterForm from './pages/CharacterForm.jsx'
+import CharacterDetail from './pages/CharacterDetail.jsx'
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
         <Route path="/library" element={<Navigate to="/main" replace />} />
         <Route path="/world/:id" element={<WorldDetail />} />
         <Route path="/character/new" element={<CharacterForm />} />
+        <Route path="/character/:id" element={<CharacterDetail />} />
       </Route>
       <Route path="*" element={<Navigate to="/main" replace />} />
     </Routes>
