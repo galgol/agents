@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { api } from '../api.js'
 
-export default function ImageUpload({ value, onChange, label = 'Image' }) {
+export default function ImageUpload({ value, onChange, label = 'Image', onUploadingChange }) {
   const inputRef = useRef(null)
   const [localPreview, setLocalPreview] = useState(null)
   const [uploading, setUploading] = useState(false)
@@ -11,6 +11,10 @@ export default function ImageUpload({ value, onChange, label = 'Image' }) {
     if (!localPreview) return
     return () => URL.revokeObjectURL(localPreview)
   }, [localPreview])
+
+  useEffect(() => {
+    if (onUploadingChange) onUploadingChange(uploading)
+  }, [uploading, onUploadingChange])
 
   async function onPick(event) {
     const file = event.target.files?.[0]

@@ -129,11 +129,13 @@ function NewWorldForm({ onCreated, onCancel }) {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [coverImageUrl, setCoverImageUrl] = useState('')
+  const [uploading, setUploading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
 
   async function onSubmit(event) {
     event.preventDefault()
+    if (uploading) return
     setError(null)
     setSubmitting(true)
     try {
@@ -179,6 +181,7 @@ function NewWorldForm({ onCreated, onCancel }) {
         label="Cover image"
         value={coverImageUrl}
         onChange={setCoverImageUrl}
+        onUploadingChange={setUploading}
       />
 
       {error && <div className="error">{error}</div>}
@@ -187,8 +190,8 @@ function NewWorldForm({ onCreated, onCancel }) {
         <button type="button" className="btn" onClick={onCancel}>
           Cancel
         </button>
-        <button type="submit" className="btn btn-primary" disabled={submitting}>
-          {submitting ? 'Creating…' : 'Create world'}
+        <button type="submit" className="btn btn-primary" disabled={submitting || uploading}>
+          {submitting ? 'Creating…' : uploading ? 'Uploading image…' : 'Create world'}
         </button>
       </div>
     </form>
