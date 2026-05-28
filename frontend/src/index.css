@@ -1,14 +1,16 @@
 :root {
-  --c-bg: #fbfbfd;
-  --c-surface: #ffffff;
-  --c-surface-2: #f5f5f7;
-  --c-border: rgba(0, 0, 0, 0.08);
-  --c-border-strong: rgba(0, 0, 0, 0.14);
-  --c-text: #1d1d1f;
-  --c-text-muted: #6e6e73;
-  --c-accent: #0071e3;
-  --c-accent-hover: #0077ed;
-  --c-danger: #b00020;
+  --c-bg: #050816;
+  --c-surface: #12193a;
+  --c-surface-2: #1a2350;
+  --c-border: rgba(126, 163, 255, 0.3);
+  --c-border-strong: rgba(104, 223, 255, 0.45);
+  --c-text: #f3f6ff;
+  --c-text-muted: #b7c4ff;
+  --c-accent: #40f6ff;
+  --c-accent-hover: #7f84ff;
+  --c-danger: #ff6f91;
+  --c-glow: rgba(64, 246, 255, 0.35);
+  --c-glow-2: rgba(255, 111, 145, 0.3);
 
   --r-sm: 8px;
   --r-md: 12px;
@@ -22,8 +24,8 @@
   --s-6: 32px;
   --s-7: 48px;
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --shadow-sm: 0 8px 20px rgba(5, 10, 34, 0.42);
+  --shadow-md: 0 18px 40px rgba(3, 7, 30, 0.58);
 
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue',
     system-ui, sans-serif;
@@ -48,6 +50,11 @@
 body {
   margin: 0;
   min-height: 100vh;
+  color: var(--c-text);
+  background:
+    radial-gradient(circle at 15% -10%, rgba(127, 132, 255, 0.35), transparent 45%),
+    radial-gradient(circle at 85% 0%, rgba(64, 246, 255, 0.28), transparent 45%),
+    linear-gradient(160deg, #050816 0%, #0b1230 55%, #120c2e 100%);
 }
 
 a {
@@ -55,7 +62,8 @@ a {
   text-decoration: none;
 }
 a:hover {
-  text-decoration: underline;
+  color: #9efbff;
+  text-decoration: none;
 }
 
 h1,
@@ -122,12 +130,15 @@ p {
   justify-content: space-between;
   padding: var(--s-4) var(--s-5);
   border-bottom: 1px solid var(--c-border);
-  background: var(--c-surface);
+  background: linear-gradient(120deg, rgba(64, 246, 255, 0.12), rgba(127, 132, 255, 0.2));
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-sm);
 }
 .app-header .brand {
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: -0.01em;
-  color: var(--c-text);
+  color: #f8f2ff;
+  text-shadow: 0 0 10px rgba(255, 111, 145, 0.5);
 }
 .app-header nav {
   display: flex;
@@ -136,11 +147,11 @@ p {
 }
 
 .card {
-  background: var(--c-surface);
+  background: linear-gradient(150deg, rgba(18, 25, 58, 0.95), rgba(35, 27, 74, 0.92));
   border: 1px solid var(--c-border);
   border-radius: var(--r-lg);
   padding: var(--s-5);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-sm), inset 0 0 0 1px rgba(255, 255, 255, 0.03);
 }
 
 .grid {
@@ -165,7 +176,7 @@ p {
   padding: 10px 12px;
   font: inherit;
   color: var(--c-text);
-  background: var(--c-surface);
+  background: rgba(10, 14, 35, 0.85);
   border: 1px solid var(--c-border-strong);
   border-radius: var(--r-sm);
   outline: none;
@@ -178,7 +189,7 @@ p {
 .input:focus,
 .textarea:focus {
   border-color: var(--c-accent);
-  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+  box-shadow: 0 0 0 3px var(--c-glow);
 }
 
 .btn {
@@ -191,43 +202,52 @@ p {
   font-weight: 500;
   border-radius: 999px;
   border: 1px solid var(--c-border-strong);
-  background: var(--c-surface);
+  background: linear-gradient(140deg, rgba(15, 22, 53, 0.95), rgba(34, 45, 95, 0.95));
   color: var(--c-text);
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease,
-    color 0.15s ease, opacity 0.15s ease;
+    color 0.15s ease, opacity 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 .btn:hover {
-  background: var(--c-surface-2);
+  background: linear-gradient(140deg, rgba(24, 32, 76, 0.95), rgba(47, 58, 113, 0.95));
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(8, 13, 38, 0.45);
 }
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 .btn-primary {
-  background: var(--c-accent);
-  border-color: var(--c-accent);
-  color: #fff;
+  background: linear-gradient(120deg, #45f6ff 0%, #7f84ff 52%, #ff6f91 100%);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #121931;
+  font-weight: 600;
+  box-shadow: 0 8px 20px var(--c-glow-2);
 }
 .btn-primary:hover {
-  background: var(--c-accent-hover);
-  border-color: var(--c-accent-hover);
+  background: linear-gradient(120deg, #70f9ff 0%, #989cff 52%, #ff85a5 100%);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 .btn-link {
   background: transparent;
   border: none;
   padding: 0;
-  color: var(--c-accent);
+  color: #ffd46b;
   cursor: pointer;
   font: inherit;
 }
 .btn-link:hover {
-  text-decoration: underline;
+  color: #ffe49e;
+  text-decoration: none;
 }
 
 .error {
   color: var(--c-danger);
   font-size: 13px;
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid rgba(255, 111, 145, 0.45);
+  border-radius: var(--r-sm);
+  background: rgba(255, 111, 145, 0.12);
 }
 
 .empty {
@@ -236,7 +256,7 @@ p {
   color: var(--c-text-muted);
   border: 1px dashed var(--c-border);
   border-radius: var(--r-lg);
-  background: var(--c-surface);
+  background: linear-gradient(145deg, rgba(12, 18, 44, 0.9), rgba(24, 19, 54, 0.88));
 }
 
 .media {
@@ -244,16 +264,19 @@ p {
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
-  background: var(--c-surface-2);
+  background: linear-gradient(145deg, rgba(38, 49, 105, 0.8), rgba(68, 46, 119, 0.78));
   border-radius: var(--r-md);
+  border: 1px solid var(--c-border);
 }
 .avatar {
   width: 56px;
   height: 56px;
   border-radius: 999px;
   object-fit: cover;
-  background: var(--c-surface-2);
+  background: linear-gradient(145deg, rgba(38, 49, 105, 0.82), rgba(68, 46, 119, 0.8));
   flex-shrink: 0;
+  border: 1px solid var(--c-border);
+  box-shadow: 0 0 0 2px rgba(64, 246, 255, 0.14);
 }
 
 .center-screen {

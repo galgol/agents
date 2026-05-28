@@ -12,7 +12,7 @@ export default function Layout({ children }) {
   return (
     <>
       <header className="app-header">
-        <Link to="/main" className="brand">Custom Ebook</Link>
+        <Link to="/main" className="brand">The new Ebook era</Link>
         <nav>
           <Link to="/main">Home</Link>
           <button type="button" className="btn-link" onClick={logout}>
