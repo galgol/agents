@@ -19,7 +19,7 @@ function renderLayout(initial = '/main') {
 describe('<Layout />', () => {
   it('renders header brand, navigation, and children', () => {
     renderLayout()
-    expect(screen.getByRole('link', { name: 'Custom Ebook' })).toHaveAttribute('href', '/main')
+    expect(screen.getByRole('link', { name: 'The new Ebook era' })).toHaveAttribute('href', '/main')
     expect(screen.getByRole('link', { name: 'Home' })).toBeInTheDocument()
     expect(screen.getByText('Inside')).toBeInTheDocument()
   })
