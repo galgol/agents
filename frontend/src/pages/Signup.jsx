@@ -1,12 +1,10 @@
 import { useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { API_BASE, ApiError } from '../api.js'
 import { isAuthenticated, setToken } from '../auth.js'
 
-export default function Login() {
+export default function Signup() {
   const navigate = useNavigate()
-  const location = useLocation()
-  const redirectTo = location.state?.from?.pathname || '/main'
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -14,7 +12,7 @@ export default function Login() {
   const [submitting, setSubmitting] = useState(false)
 
   if (isAuthenticated()) {
-    navigate(redirectTo, { replace: true })
+    navigate('/main', { replace: true })
     return null
   }
 
@@ -23,25 +21,38 @@ export default function Login() {
     setError(null)
     setSubmitting(true)
     try {
+      const registerRes = await fetch(`${API_BASE}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      })
+      if (!registerRes.ok) {
+        let detail = `Request failed (${registerRes.status})`
+        try {
+          const data = await registerRes.json()
+          if (data?.detail && typeof data.detail === 'string') detail = data.detail
+        } catch {
+          // response wasn't JSON; keep default message
+        }
+        throw new ApiError(detail, registerRes.status)
+      }
+
       const body = new URLSearchParams({ username, password })
-      const res = await fetch(`${API_BASE}/auth/login`, {
+      const loginRes = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body,
       })
-      if (!res.ok) {
-        throw new ApiError(`Request failed (${res.status})`, res.status)
+      if (!loginRes.ok) {
+        throw new ApiError(`Request failed (${loginRes.status})`, loginRes.status)
       }
-      const data = await res.json()
+      const data = await loginRes.json()
       const token = data?.access_token || data?.token
       if (!token) throw new Error('Login response missing token')
       setToken(token)
-      navigate(redirectTo, { replace: true })
+      navigate('/main', { replace: true })
     } catch (err) {
-      const message =
-        err instanceof ApiError && err.status === 401
-          ? 'Invalid username or password'
-          : err.message || 'Sign in failed'
+      const message = err?.message || 'Sign up failed'
       setError(message)
     } finally {
       setSubmitting(false)
@@ -52,8 +63,8 @@ export default function Login() {
     <div className="center-screen">
       <form className="card stack" style={{ width: 360 }} onSubmit={onSubmit}>
         <div className="stack-tight">
-          <h1>Sign in</h1>
-          <p className="muted small">Continue to your worlds and characters.</p>
+          <h1>Create account</h1>
+          <p className="muted small">Start building your worlds and characters.</p>
         </div>
 
         <div className="field">
@@ -63,6 +74,8 @@ export default function Login() {
             className="input"
             type="text"
             autoComplete="username"
+            minLength={3}
+            maxLength={64}
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
@@ -75,7 +88,9 @@ export default function Login() {
             id="password"
             className="input"
             type="password"
-            autoComplete="current-password"
+            autoComplete="new-password"
+            minLength={6}
+            maxLength={128}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -85,11 +100,11 @@ export default function Login() {
         {error && <div className="error" role="alert">{error}</div>}
 
         <button type="submit" className="btn btn-primary" disabled={submitting}>
-          {submitting ? 'Signing in…' : 'Sign in'}
+          {submitting ? 'Creating account…' : 'Create account'}
         </button>
 
         <p className="muted small" style={{ textAlign: 'center' }}>
-          New here? <Link to="/signup">Create an account</Link>
+          Already have an account? <Link to="/login">Sign in</Link>
         </p>
       </form>
     </div>
