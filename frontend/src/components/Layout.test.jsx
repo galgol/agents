@@ -21,6 +21,8 @@ describe('<Layout />', () => {
     renderLayout()
     expect(screen.getByRole('link', { name: 'The new Ebook era' })).toHaveAttribute('href', '/main')
     expect(screen.getByRole('link', { name: 'Home' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Comic book home icon' })).toBeInTheDocument()
+    expect(screen.queryByText('Home')).not.toBeInTheDocument()
     expect(screen.getByText('Inside')).toBeInTheDocument()
   })
 

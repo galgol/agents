@@ -145,6 +145,27 @@ p {
   gap: var(--s-4);
   align-items: center;
 }
+.home-link {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 8px 18px rgba(9, 15, 41, 0.24);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.home-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(9, 15, 41, 0.32);
+}
+.home-link__icon {
+  width: 28px;
+  height: 28px;
+  display: block;
+}
 
 .card {
   background: linear-gradient(150deg, rgba(18, 25, 58, 0.95), rgba(35, 27, 74, 0.92));
