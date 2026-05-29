@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import Layout from '../components/Layout.jsx'
 import ImageUpload from '../components/ImageUpload.jsx'
@@ -8,6 +8,9 @@ export default function CharacterForm() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const worldId = searchParams.get('world_id') || ''
+  const [selectedWorldId, setSelectedWorldId] = useState(worldId)
+  const [worlds, setWorlds] = useState([])
+  const [worldsLoading, setWorldsLoading] = useState(!worldId)
 
   const [name, setName] = useState('')
   const [bio, setBio] = useState('')
@@ -23,6 +26,27 @@ export default function CharacterForm() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
 
+  useEffect(() => {
+    if (worldId) return undefined
+    let cancelled = false
+    setWorldsLoading(true)
+    api.get('/worlds')
+      .then((data) => {
+        if (!cancelled) {
+          setWorlds(Array.isArray(data) ? data : [])
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err.message || 'Failed to load worlds')
+      })
+      .finally(() => {
+        if (!cancelled) setWorldsLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [worldId])
+
   async function onSubmit(event) {
     event.preventDefault()
     setError(null)
@@ -32,7 +56,7 @@ export default function CharacterForm() {
       const ageNum =
         ageTrim === '' ? null : Number.parseInt(ageTrim, 10)
       const body = {
-        ...(worldId ? { world_id: worldId } : {}),
+        ...(selectedWorldId ? { world_id: selectedWorldId } : {}),
         name,
         bio: bio.trim() || null,
         traits: traits.trim() || null,
@@ -46,8 +70,8 @@ export default function CharacterForm() {
         characteristics: characteristics.trim() || null,
       }
       await api.post('/characters', body)
-      if (worldId) {
-        navigate(`/world/${worldId}`)
+      if (selectedWorldId) {
+        navigate(`/world/${selectedWorldId}`)
       } else {
         navigate('/main')
       }
@@ -67,6 +91,26 @@ export default function CharacterForm() {
           </Link>
           <h1>New character</h1>
         </div>
+
+        {!worldId && (
+          <div className="field">
+            <label className="label" htmlFor="char-world">World</label>
+            <select
+              id="char-world"
+              className="input"
+              value={selectedWorldId}
+              onChange={(e) => setSelectedWorldId(e.target.value)}
+              disabled={worldsLoading}
+            >
+              <option value="">Real world (default)</option>
+              {worlds.map((world) => (
+                <option key={world.id} value={String(world.id)}>
+                  {world.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div className="field">
           <label className="label" htmlFor="char-name">Name</label>
