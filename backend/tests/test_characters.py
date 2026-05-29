@@ -118,6 +118,24 @@ def test_create_character_without_world_id_creates_default_world(client: TestCli
     assert isinstance(body["world_id"], int)
 
 
+def test_create_character_without_world_id_uses_real_default_world(client: TestClient) -> None:
+    token = register_and_login(client)
+    lookalike_world_id = _create_world(client, token, name="Real world")
+
+    r = client.post("/characters", json={"name": "Aria"}, headers=auth_headers(token))
+    assert r.status_code == 201
+    body = r.json()
+    assert body["world_id"] != lookalike_world_id
+
+    worlds = client.get("/worlds", headers=auth_headers(token)).json()
+    default_world = next(
+        (world for world in worlds if world["description"] == "A basic real-world setting."),
+        None,
+    )
+    assert default_world is not None
+    assert default_world["id"] == body["world_id"]
+
+
 def test_create_character_validation_missing_name(client: TestClient) -> None:
     token = register_and_login(client)
     world_id = _create_world(client, token)

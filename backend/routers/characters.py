@@ -9,6 +9,7 @@ from ..security import get_current_user
 router = APIRouter(prefix="/characters", tags=["characters"])
 
 DEFAULT_WORLD_NAME = "Real world"
+DEFAULT_WORLD_DESCRIPTION = "A basic real-world setting."
 
 
 def _get_owned_world(db: Session, world_id: int, user: User) -> World:
@@ -19,10 +20,18 @@ def _get_owned_world(db: Session, world_id: int, user: User) -> World:
 
 
 def _get_or_create_default_world(db: Session, user: User) -> World:
-    world = db.query(World).filter(World.user_id == user.id, World.name == DEFAULT_WORLD_NAME).first()
+    world = (
+        db.query(World)
+        .filter(
+            World.user_id == user.id,
+            World.name == DEFAULT_WORLD_NAME,
+            World.description == DEFAULT_WORLD_DESCRIPTION,
+        )
+        .first()
+    )
     if world:
         return world
-    world = World(user_id=user.id, name=DEFAULT_WORLD_NAME, description="A basic real-world setting.")
+    world = World(user_id=user.id, name=DEFAULT_WORLD_NAME, description=DEFAULT_WORLD_DESCRIPTION)
     db.add(world)
     db.commit()
     db.refresh(world)
