@@ -124,6 +124,41 @@ describe('<Library />', () => {
     })
   })
 
+  it('creates a world with an uploaded cover and shows it in the card preview', async () => {
+    fetch
+      .mockResolvedValueOnce(jsonResponse([]))
+      .mockResolvedValueOnce(jsonResponse([]))
+      .mockResolvedValueOnce(jsonResponse({ url: '/static/images/cover.png' }, 201))
+      .mockResolvedValueOnce(
+        jsonResponse({ id: 7, name: 'New', description: '', cover_image_url: '/static/images/cover.png' }, 201),
+      )
+    const { container } = renderLibrary()
+    await screen.findByText(/No worlds yet/)
+
+    await userEvent.click(screen.getByRole('button', { name: 'New world' }))
+    await userEvent.type(screen.getByLabelText('Name'), 'New')
+
+    const file = new File([new Uint8Array([1, 2, 3])], 'cover.png', { type: 'image/png' })
+    const input = container.querySelector('input[type="file"]')
+    await userEvent.upload(input, file)
+
+    const createButton = screen.getByRole('button', { name: 'Create world' })
+    await waitFor(() => expect(createButton).toBeEnabled())
+    await userEvent.click(createButton)
+
+    await waitFor(() => expect(screen.getByRole('heading', { name: 'New' })).toBeInTheDocument())
+    const img = container.querySelector('img.media')
+    expect(img).toHaveAttribute('src', '/static/images/cover.png')
+
+    const createCall = fetch.mock.calls[3]
+    expect(createCall[0]).toBe('/worlds')
+    expect(JSON.parse(createCall[1].body)).toEqual({
+      name: 'New',
+      description: '',
+      cover_image_url: '/static/images/cover.png',
+    })
+  })
+
   it('cancel button closes the form without calling the API', async () => {
     fetch.mockResolvedValueOnce(jsonResponse([])).mockResolvedValueOnce(jsonResponse([]))
     renderLibrary()
