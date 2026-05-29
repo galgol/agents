@@ -66,15 +66,49 @@ describe('<CharacterForm />', () => {
   })
 
   it('creates a character without a world and navigates to the home hub', async () => {
-    fetch.mockResolvedValueOnce(jsonResponse({ id: 1, world_id: 99, name: 'Aria' }, 201))
+    fetch
+      .mockResolvedValueOnce(jsonResponse([]))
+      .mockResolvedValueOnce(jsonResponse({ id: 1, world_id: 99, name: 'Aria' }, 201))
     renderForm('/character/new')
     await userEvent.type(screen.getByLabelText('Name'), 'Aria')
     await userEvent.click(screen.getByRole('button', { name: 'Create character' }))
     await waitFor(() => expect(screen.getByText('Home hub')).toBeInTheDocument())
 
-    const [url, opts] = fetch.mock.calls[0]
+    expect(fetch.mock.calls[0][0]).toBe('/worlds')
+    const [url, opts] = fetch.mock.calls[1]
     expect(url).toBe('/characters')
     expect(JSON.parse(opts.body)).toEqual({
+      name: 'Aria',
+      bio: null,
+      traits: null,
+      image_url: null,
+      age: null,
+      gender: null,
+      hair: null,
+      eyes: null,
+      height: null,
+      body_figure: null,
+      characteristics: null,
+    })
+  })
+
+  it('creates a character in the selected world', async () => {
+    fetch
+      .mockResolvedValueOnce(jsonResponse([{ id: 7, name: 'Eldoria' }]))
+      .mockResolvedValueOnce(jsonResponse({ id: 1, world_id: 7, name: 'Aria' }, 201))
+    renderForm('/character/new')
+
+    await screen.findByRole('option', { name: 'Eldoria' })
+    await userEvent.selectOptions(screen.getByLabelText('World'), '7')
+    await userEvent.type(screen.getByLabelText('Name'), 'Aria')
+    await userEvent.click(screen.getByRole('button', { name: 'Create character' }))
+
+    await waitFor(() => expect(screen.getByText('World page')).toBeInTheDocument())
+    expect(fetch.mock.calls[0][0]).toBe('/worlds')
+    const [url, opts] = fetch.mock.calls[1]
+    expect(url).toBe('/characters')
+    expect(JSON.parse(opts.body)).toEqual({
+      world_id: '7',
       name: 'Aria',
       bio: null,
       traits: null,
