@@ -1,15 +1,8 @@
 import { Link } from 'react-router-dom'
-import { API_BASE } from '../api.js'
-
-export function resolveCoverImageUrl(coverImageUrl, apiBase = API_BASE) {
-  if (!coverImageUrl) return null
-  if (/^https?:\/\//.test(coverImageUrl)) return coverImageUrl
-  if (!/^https?:\/\//.test(apiBase || '')) return coverImageUrl
-  return `${apiBase}${coverImageUrl.startsWith('/') ? '' : '/'}${coverImageUrl}`
-}
+import { resolveApiAssetUrl } from '../api.js'
 
 export default function WorldCard({ world }) {
-  const coverImageSrc = resolveCoverImageUrl(world.cover_image_url)
+  const coverImageSrc = resolveApiAssetUrl(world.cover_image_url)
 
   return (
     <Link to={`/world/${world.id}`} className="card stack-tight" style={{ textDecoration: 'none' }}>

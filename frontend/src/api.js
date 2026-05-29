@@ -2,6 +2,13 @@ import { clearToken, getToken } from './auth.js'
 
 export const API_BASE = (import.meta.env?.VITE_API_BASE_URL ?? '').replace(/\/$/, '')
 
+export function resolveApiAssetUrl(assetUrl, apiBase = API_BASE) {
+  if (!assetUrl) return null
+  if (/^https?:\/\//.test(assetUrl)) return assetUrl
+  if (!/^https?:\/\//.test(apiBase)) return assetUrl
+  return `${apiBase}${assetUrl.startsWith('/') ? '' : '/'}${assetUrl}`
+}
+
 export class ApiError extends Error {
   constructor(message, status) {
     super(message)
