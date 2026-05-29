@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
+import { resolveApiAssetUrl } from '../api.js'
 import WorldCard from './WorldCard.jsx'
 
 function renderCard(world) {
@@ -12,6 +13,12 @@ function renderCard(world) {
 }
 
 describe('<WorldCard />', () => {
+  it('resolves a relative cover path against an absolute API base', () => {
+    expect(resolveApiAssetUrl('/static/images/cover.png', 'https://api.example.com')).toBe(
+      'https://api.example.com/static/images/cover.png',
+    )
+  })
+
   it('renders name and links to the world detail page', () => {
     renderCard({ id: 42, name: 'Eldoria' })
     expect(screen.getByRole('heading', { name: 'Eldoria' })).toBeInTheDocument()

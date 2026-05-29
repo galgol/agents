@@ -1,10 +1,13 @@
 import { Link } from 'react-router-dom'
+import { resolveApiAssetUrl } from '../api.js'
 
 export default function WorldCard({ world }) {
+  const coverImageSrc = resolveApiAssetUrl(world.cover_image_url)
+
   return (
     <Link to={`/world/${world.id}`} className="card stack-tight" style={{ textDecoration: 'none' }}>
-      {world.cover_image_url ? (
-        <img className="media" src={world.cover_image_url} alt="" />
+      {coverImageSrc ? (
+        <img className="media" src={coverImageSrc} alt="" />
       ) : (
         <div className="media" />
       )}
