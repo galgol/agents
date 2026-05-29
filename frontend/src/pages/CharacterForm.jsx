@@ -29,7 +29,6 @@ export default function CharacterForm() {
   useEffect(() => {
     if (worldId) return undefined
     let cancelled = false
-    setWorldsLoading(true)
     api.get('/worlds')
       .then((data) => {
         if (!cancelled) {
