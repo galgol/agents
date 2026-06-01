@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import Layout from '../components/Layout.jsx'
 import WorldCard from '../components/WorldCard.jsx'
 import CharacterCard from '../components/CharacterCard.jsx'
+import HorizontalCardRow from '../components/HorizontalCardRow.jsx'
 import { api } from '../api.js'
 
 export default function Library() {
@@ -65,11 +66,11 @@ export default function Library() {
               {worlds.length === 0 ? (
                 <div className="empty">No worlds yet. Create your first one.</div>
               ) : (
-                <div className="grid">
+                <HorizontalCardRow label="worlds">
                   {worlds.map((w) => (
                     <WorldCard key={w.id} world={w} />
                   ))}
-                </div>
+                </HorizontalCardRow>
               )}
             </section>
 
@@ -85,7 +86,7 @@ export default function Library() {
                   No characters yet. Use &quot;New character&quot; above to add one.
                 </div>
               ) : (
-                <div className="grid">
+                <HorizontalCardRow label="characters">
                   {characters.map((c) => (
                     <CharacterCard
                       key={c.id}
@@ -93,7 +94,7 @@ export default function Library() {
                       subtitle={worldNameById.get(c.world_id) || undefined}
                     />
                   ))}
-                </div>
+                </HorizontalCardRow>
               )}
             </section>
           </div>

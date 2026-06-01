@@ -58,6 +58,8 @@ describe('<Characters />', () => {
     expect(await screen.findByRole('heading', { name: 'Aria' })).toBeInTheDocument()
     expect(screen.getByText('Eldoria')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'New character' })).toHaveAttribute('href', '/character/new')
+    expect(screen.getByRole('button', { name: 'Scroll characters left' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Scroll characters right' })).toBeInTheDocument()
   })
 
   it('shows empty state when no characters exist', async () => {

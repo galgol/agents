@@ -43,6 +43,8 @@ describe('<Worlds />', () => {
     renderWorlds()
     expect(await screen.findByRole('heading', { name: 'Eldoria' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Borea' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Scroll worlds left' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Scroll worlds right' })).toBeInTheDocument()
   })
 
   it('opens the new-world form and creates a world', async () => {
