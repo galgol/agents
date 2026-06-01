@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { clearToken } from '../auth.js'
-import customHomeIcon from '../assets/home-icon-issue-22.jpg'
+import customHomeIcon from '../assets/home-icon-issue-31.svg'
 
 export default function Layout({ children }) {
   const navigate = useNavigate()
