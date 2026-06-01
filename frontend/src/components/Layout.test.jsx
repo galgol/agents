@@ -18,12 +18,15 @@ function renderLayout(initial = '/main') {
 
 describe('<Layout />', () => {
   it('renders header brand, navigation, and children', () => {
-    renderLayout()
-    expect(screen.getByRole('link', { name: 'The new Ebook era' })).toHaveAttribute('href', '/main')
+    const { container } = renderLayout()
+    const brandLink = screen.getByRole('link', { name: 'The new Ebook era' })
+    expect(brandLink).toHaveAttribute('href', '/main')
     expect(screen.getByRole('link', { name: 'Home' })).toBeInTheDocument()
-    expect(screen.getByRole('img', { name: 'Comic book home icon' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Custom home icon' })).toBeInTheDocument()
     expect(screen.queryByText('Home')).not.toBeInTheDocument()
     expect(screen.getByText('Inside')).toBeInTheDocument()
+    const nav = container.querySelector('header nav')
+    expect(nav?.compareDocumentPosition(brandLink)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
   })
 
   it('signing out clears the stored token and navigates to /login', async () => {

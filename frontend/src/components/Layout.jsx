@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { clearToken } from '../auth.js'
-import comicBookHomeIcon from '../assets/comic-book-home.svg'
+import customHomeIcon from '../assets/home-icon-issue-22.jpg'
 
 export default function Layout({ children }) {
   const navigate = useNavigate()
@@ -13,12 +13,11 @@ export default function Layout({ children }) {
   return (
     <>
       <header className="app-header">
-        <Link to="/main" className="brand">The new Ebook era</Link>
         <nav>
           <Link to="/main" className="home-link" aria-label="Home">
             <img
-              src={comicBookHomeIcon}
-              alt="Comic book home icon"
+              src={customHomeIcon}
+              alt="Custom home icon"
               className="home-link__icon"
             />
           </Link>
@@ -26,6 +25,7 @@ export default function Layout({ children }) {
             Sign out
           </button>
         </nav>
+        <Link to="/main" className="brand">The new Ebook era</Link>
       </header>
       <main className="app-shell">{children}</main>
     </>
