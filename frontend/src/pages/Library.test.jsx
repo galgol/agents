@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import Library from './Library.jsx'
 import { setToken } from '../auth.js'
@@ -85,11 +84,19 @@ describe('<Library />', () => {
     fetch.mockResolvedValueOnce(jsonResponse([])).mockResolvedValueOnce(jsonResponse([]))
     renderLibrary()
     expect(
-      await screen.findByRole('heading', { level: 1, name: 'Personal Shelf' }),
+      await screen.findByRole('heading', { level: 1, name: 'Main page' }),
     ).toBeInTheDocument()
     expect(
-      screen.getByText('Your worlds & characters : everything you have created in one place.'),
+      screen.getByText('Your worlds, characters, and books created by you in one place.'),
     ).toBeInTheDocument()
+  })
+
+  it('links to the dedicated worlds and characters endpoints', async () => {
+    fetch.mockResolvedValueOnce(jsonResponse([])).mockResolvedValueOnce(jsonResponse([]))
+    renderLibrary()
+    await screen.findByRole('heading', { level: 1, name: 'Main page' })
+    expect(screen.getByRole('link', { name: 'Worlds endpoint' })).toHaveAttribute('href', '/worlds')
+    expect(screen.getByRole('link', { name: 'Characters endpoint' })).toHaveAttribute('href', '/characters')
   })
 
   it('shows an error when fetching worlds fails', async () => {
@@ -98,74 +105,5 @@ describe('<Library />', () => {
       .mockResolvedValueOnce(jsonResponse([]))
     renderLibrary()
     expect(await screen.findByText('boom')).toBeInTheDocument()
-  })
-
-  it('opens the new-world form and creates a world', async () => {
-    fetch
-      .mockResolvedValueOnce(jsonResponse([]))
-      .mockResolvedValueOnce(jsonResponse([]))
-      .mockResolvedValueOnce(
-        jsonResponse({ id: 7, name: 'New', description: '', cover_image_url: null }, 201),
-      )
-    renderLibrary()
-    await screen.findByText(/No worlds yet/)
-
-    await userEvent.click(screen.getByRole('button', { name: 'New world' }))
-    await userEvent.type(screen.getByLabelText('Name'), 'New')
-    await userEvent.click(screen.getByRole('button', { name: 'Create world' }))
-
-    await waitFor(() => expect(screen.getByRole('heading', { name: 'New' })).toBeInTheDocument())
-    const createCall = fetch.mock.calls[2]
-    expect(createCall[0]).toBe('/worlds')
-    expect(JSON.parse(createCall[1].body)).toEqual({
-      name: 'New',
-      description: '',
-      cover_image_url: null,
-    })
-  })
-
-  it('creates a world with an uploaded cover and shows it in the card preview', async () => {
-    fetch
-      .mockResolvedValueOnce(jsonResponse([]))
-      .mockResolvedValueOnce(jsonResponse([]))
-      .mockResolvedValueOnce(jsonResponse({ url: '/static/images/cover.png' }, 201))
-      .mockResolvedValueOnce(
-        jsonResponse({ id: 7, name: 'New', description: '', cover_image_url: '/static/images/cover.png' }, 201),
-      )
-    const { container } = renderLibrary()
-    await screen.findByText(/No worlds yet/)
-
-    await userEvent.click(screen.getByRole('button', { name: 'New world' }))
-    await userEvent.type(screen.getByLabelText('Name'), 'New')
-
-    const file = new File([new Uint8Array([1, 2, 3])], 'cover.png', { type: 'image/png' })
-    const input = container.querySelector('input[type="file"]')
-    await userEvent.upload(input, file)
-
-    const createButton = screen.getByRole('button', { name: 'Create world' })
-    await waitFor(() => expect(createButton).toBeEnabled())
-    await userEvent.click(createButton)
-
-    await waitFor(() => expect(screen.getByRole('heading', { name: 'New' })).toBeInTheDocument())
-    const img = container.querySelector('img.media')
-    expect(img).toHaveAttribute('src', '/static/images/cover.png')
-
-    const createCall = fetch.mock.calls[3]
-    expect(createCall[0]).toBe('/worlds')
-    expect(JSON.parse(createCall[1].body)).toEqual({
-      name: 'New',
-      description: '',
-      cover_image_url: '/static/images/cover.png',
-    })
-  })
-
-  it('cancel button closes the form without calling the API', async () => {
-    fetch.mockResolvedValueOnce(jsonResponse([])).mockResolvedValueOnce(jsonResponse([]))
-    renderLibrary()
-    await screen.findByText(/No worlds yet/)
-    await userEvent.click(screen.getByRole('button', { name: 'New world' }))
-    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
-    expect(screen.queryByRole('button', { name: 'Create world' })).toBeNull()
-    expect(fetch).toHaveBeenCalledTimes(2)
   })
 })

@@ -21,7 +21,7 @@ function renderForm(initial = '/character/new?world_id=5') {
       <Routes>
         <Route path="/character/new" element={<CharacterForm />} />
         <Route path="/world/:id" element={<div>World page</div>} />
-        <Route path="/main" element={<div>Home hub</div>} />
+        <Route path="/characters" element={<div>Characters endpoint</div>} />
       </Routes>
     </MemoryRouter>,
   )
@@ -65,14 +65,14 @@ describe('<CharacterForm />', () => {
     })
   })
 
-  it('creates a character without a world and navigates to the home hub', async () => {
+  it('creates a character without a world and navigates to the characters endpoint', async () => {
     fetch
       .mockResolvedValueOnce(jsonResponse([]))
       .mockResolvedValueOnce(jsonResponse({ id: 1, world_id: 99, name: 'Aria' }, 201))
     renderForm('/character/new')
     await userEvent.type(screen.getByLabelText('Name'), 'Aria')
     await userEvent.click(screen.getByRole('button', { name: 'Create character' }))
-    await waitFor(() => expect(screen.getByText('Home hub')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('Characters endpoint')).toBeInTheDocument())
 
     expect(fetch.mock.calls[0][0]).toBe('/worlds')
     const [url, opts] = fetch.mock.calls[1]
@@ -123,9 +123,9 @@ describe('<CharacterForm />', () => {
     })
   })
 
-  it('renders the back link to the home hub when no world_id', () => {
+  it('renders the back link to the characters endpoint when no world_id', () => {
     renderForm('/character/new')
-    expect(screen.getByRole('link', { name: /Back/ })).toHaveAttribute('href', '/main')
+    expect(screen.getByRole('link', { name: /Back/ })).toHaveAttribute('href', '/characters')
   })
 
   it('renders the back link to the world when world_id is set', () => {
