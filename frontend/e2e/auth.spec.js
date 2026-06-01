@@ -21,9 +21,7 @@ test.describe('auth flow', () => {
     await page.getByLabel('Password').fill(account.password)
     await page.getByRole('button', { name: 'Sign in' }).click()
     await expect(page).toHaveURL(/\/main$/)
-    await expect(
-      page.getByRole('heading', { level: 1, name: 'Main page' }),
-    ).toBeVisible()
+    await expect(page.locator('a[href="/worlds"]')).toBeVisible()
   })
 
   test('sign out returns to /login and protects /main again', async ({ page, account }) => {

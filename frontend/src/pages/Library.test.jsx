@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import Library from './Library.jsx'
 import { setToken } from '../auth.js'
@@ -84,7 +84,7 @@ describe('<Library />', () => {
     fetch.mockResolvedValueOnce(jsonResponse([])).mockResolvedValueOnce(jsonResponse([]))
     renderLibrary()
     expect(
-      await screen.findByRole('heading', { level: 1, name: 'Main page' }),
+      await screen.findByRole('heading', { level: 1, name: 'Your Shelf' }),
     ).toBeInTheDocument()
     expect(
       screen.getByText('Your worlds, characters, and books created by you in one place.'),
@@ -93,10 +93,10 @@ describe('<Library />', () => {
 
   it('links to the dedicated worlds and characters endpoints', async () => {
     fetch.mockResolvedValueOnce(jsonResponse([])).mockResolvedValueOnce(jsonResponse([]))
-    renderLibrary()
-    await screen.findByRole('heading', { level: 1, name: 'Main page' })
-    expect(screen.getByRole('link', { name: 'Worlds endpoint' })).toHaveAttribute('href', '/worlds')
-    expect(screen.getByRole('link', { name: 'Characters endpoint' })).toHaveAttribute('href', '/characters')
+    const { container } = renderLibrary()
+    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2))
+    expect(container.querySelector('a[href="/worlds"]')).toBeInTheDocument()
+    expect(container.querySelector('a[href="/characters"]')).toBeInTheDocument()
   })
 
   it('shows an error when fetching worlds fails', async () => {

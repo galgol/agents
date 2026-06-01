@@ -41,7 +41,7 @@ export default function Characters() {
       <div className="stack">
         <div className="spread">
           <div className="stack-tight">
-            <Link to="/main" className="small">← Main page</Link>
+            <Link to="/main" className="small">← Your Shelf</Link>
             <h1>Characters</h1>
             <p className="muted small">All your characters. Create a new one from this endpoint.</p>
           </div>
