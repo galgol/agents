@@ -43,6 +43,8 @@ describe('<Worlds />', () => {
     renderWorlds()
     expect(await screen.findByRole('heading', { name: 'Eldoria' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Borea' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Scroll worlds left' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Scroll worlds right' })).toBeInTheDocument()
   })
 
   it('opens the new-world form and creates a world', async () => {
@@ -85,9 +87,8 @@ describe('<Worlds />', () => {
     const input = container.querySelector('input[type="file"]')
     await userEvent.upload(input, file)
 
-    const createButton = screen.getByRole('button', { name: 'Create world' })
-    await waitFor(() => expect(createButton).toBeEnabled())
-    await userEvent.click(createButton)
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Create world' })).toBeEnabled())
+    await userEvent.click(screen.getByRole('button', { name: 'Create world' }))
 
     await waitFor(() => expect(screen.getByRole('heading', { name: 'New' })).toBeInTheDocument())
     const img = container.querySelector('img.media')

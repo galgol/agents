@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Layout from '../components/Layout.jsx'
 import CharacterCard from '../components/CharacterCard.jsx'
+import HorizontalCardRow from '../components/HorizontalCardRow.jsx'
 import { api } from '../api.js'
 
 export default function Characters() {
@@ -59,7 +60,7 @@ export default function Characters() {
             No characters yet. Use &quot;New character&quot; above to add one.
           </div>
         ) : (
-          <div className="grid">
+          <HorizontalCardRow label="characters">
             {characters.map((character) => (
               <CharacterCard
                 key={character.id}
@@ -67,7 +68,7 @@ export default function Characters() {
                 subtitle={worldNameById.get(character.world_id) || undefined}
               />
             ))}
-          </div>
+          </HorizontalCardRow>
         )}
       </div>
     </Layout>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Layout from '../components/Layout.jsx'
 import WorldCard from '../components/WorldCard.jsx'
+import HorizontalCardRow from '../components/HorizontalCardRow.jsx'
 import ImageUpload from '../components/ImageUpload.jsx'
 import { api } from '../api.js'
 
@@ -69,11 +70,11 @@ export default function Worlds() {
         ) : worlds.length === 0 ? (
           <div className="empty">No worlds yet. Create your first one.</div>
         ) : (
-          <div className="grid">
+          <HorizontalCardRow label="worlds">
             {worlds.map((world) => (
               <WorldCard key={world.id} world={world} />
             ))}
-          </div>
+          </HorizontalCardRow>
         )}
       </div>
     </Layout>

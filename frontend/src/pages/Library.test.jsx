@@ -99,6 +99,40 @@ describe('<Library />', () => {
     expect(container.querySelector('a[href="/characters"]')).toBeInTheDocument()
   })
 
+  it('shows scroll controls for world and character rows when populated', async () => {
+    fetch
+      .mockResolvedValueOnce(
+        jsonResponse([
+          { id: 1, name: 'Eldoria', description: 'magical', cover_image_url: null },
+        ]),
+      )
+      .mockResolvedValueOnce(
+        jsonResponse([
+          {
+            id: 2,
+            world_id: 1,
+            name: 'Aria',
+            bio: null,
+            traits: null,
+            image_url: null,
+            age: null,
+            gender: null,
+            hair: null,
+            eyes: null,
+            height: null,
+            body_figure: null,
+            characteristics: null,
+          },
+        ]),
+      )
+    renderLibrary()
+    expect(await screen.findByRole('heading', { name: 'Eldoria' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Scroll worlds left' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Scroll worlds right' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Scroll characters left' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Scroll characters right' })).toBeInTheDocument()
+  })
+
   it('shows an error when fetching worlds fails', async () => {
     fetch
       .mockResolvedValueOnce(jsonResponse({ detail: 'boom' }, 500))
