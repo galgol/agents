@@ -10,6 +10,7 @@ function renderLayout(initial = '/main') {
     <MemoryRouter initialEntries={[initial]}>
       <Routes>
         <Route path="/main" element={<Layout><h2>Inside</h2></Layout>} />
+        <Route path="/world/:id" element={<Layout><h2>World</h2></Layout>} />
         <Route path="/login" element={<div>Login page</div>} />
       </Routes>
     </MemoryRouter>,
@@ -21,12 +22,20 @@ describe('<Layout />', () => {
     const { container } = renderLayout()
     const brandLink = screen.getByRole('link', { name: 'The new Ebook era' })
     expect(brandLink).toHaveAttribute('href', '/main')
-    expect(screen.getByRole('link', { name: 'Home' })).toBeInTheDocument()
+    const homeLink = screen.getByRole('link', { name: 'Home' })
+    expect(homeLink).toBeInTheDocument()
+    expect(homeLink).toHaveAttribute('href', '/')
     expect(screen.getByRole('img', { name: 'Custom home icon' })).toBeInTheDocument()
     expect(screen.queryByText('Home')).not.toBeInTheDocument()
     expect(screen.getByText('Inside')).toBeInTheDocument()
     const nav = container.querySelector('header nav')
     expect(nav?.compareDocumentPosition(brandLink)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
+  })
+
+  it('keeps the home icon targeting /main on non-home routes', () => {
+    renderLayout('/world/1')
+    expect(screen.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/main')
+    expect(screen.getByText('World')).toBeInTheDocument()
   })
 
   it('signing out clears the stored token and navigates to /login', async () => {

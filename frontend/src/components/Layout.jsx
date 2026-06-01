@@ -1,9 +1,11 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { clearToken } from '../auth.js'
 import customHomeIcon from '../assets/home-icon-issue-22.jpg'
 
 export default function Layout({ children }) {
   const navigate = useNavigate()
+  const location = useLocation()
+  const homeTarget = location.pathname === '/main' ? '/' : '/main'
 
   function logout() {
     clearToken()
@@ -14,7 +16,7 @@ export default function Layout({ children }) {
     <>
       <header className="app-header">
         <nav>
-          <Link to="/main" className="home-link" aria-label="Home">
+          <Link to={homeTarget} className="home-link" aria-label="Home">
             <img
               src={customHomeIcon}
               alt="Custom home icon"
