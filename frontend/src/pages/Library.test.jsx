@@ -84,7 +84,7 @@ describe('<Library />', () => {
     fetch.mockResolvedValueOnce(jsonResponse([])).mockResolvedValueOnce(jsonResponse([]))
     renderLibrary()
     expect(
-      await screen.findByRole('heading', { level: 1, name: 'Main page' }),
+      await screen.findByRole('heading', { level: 1, name: 'Your Shelf' }),
     ).toBeInTheDocument()
     expect(
       screen.getByText('Your worlds, characters, and books created by you in one place.'),
@@ -94,9 +94,12 @@ describe('<Library />', () => {
   it('links to the dedicated worlds and characters endpoints', async () => {
     fetch.mockResolvedValueOnce(jsonResponse([])).mockResolvedValueOnce(jsonResponse([]))
     renderLibrary()
-    await screen.findByRole('heading', { level: 1, name: 'Main page' })
-    expect(screen.getByRole('link', { name: 'Worlds endpoint' })).toHaveAttribute('href', '/worlds')
-    expect(screen.getByRole('link', { name: 'Characters endpoint' })).toHaveAttribute('href', '/characters')
+    await screen.findByRole('heading', { level: 1, name: 'Your Shelf' })
+    expect(screen.getByRole('link', { name: 'Your worlds' })).toHaveAttribute('href', '/worlds')
+    expect(screen.getByRole('link', { name: 'Your characters' })).toHaveAttribute(
+      'href',
+      '/characters',
+    )
   })
 
   it('shows an error when fetching worlds fails', async () => {
