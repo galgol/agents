@@ -25,15 +25,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
 
-      # Start FastAPI app in background
-      - name: Start FastAPI server
-        run: |
-          uvicorn backend.main:app --host 0.0.0.0 --port 8000 &
-
-      # Wait for server to start
-      - name: Wait for server
-        run: sleep 5
-
-      # Run tests
+      # Run tests (use httpx TestClient; no running server needed)
       - name: Run pytest
-        run: pytest backend/tests
+        run: python -m pytest backend/tests
