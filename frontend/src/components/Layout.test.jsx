@@ -24,7 +24,7 @@ describe('<Layout />', () => {
     expect(brandLink).toHaveAttribute('href', '/main')
     const homeLink = screen.getByRole('link', { name: 'Home' })
     expect(homeLink).toBeInTheDocument()
-    expect(homeLink).toHaveAttribute('href', '/')
+    expect(homeLink).toHaveAttribute('href', '/main')
     expect(screen.getByRole('img', { name: 'Custom home icon' })).toBeInTheDocument()
     expect(screen.queryByText('Home')).not.toBeInTheDocument()
     expect(screen.getByText('Inside')).toBeInTheDocument()
