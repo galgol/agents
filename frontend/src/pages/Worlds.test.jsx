@@ -87,9 +87,8 @@ describe('<Worlds />', () => {
     const input = container.querySelector('input[type="file"]')
     await userEvent.upload(input, file)
 
-    const createButton = screen.getByRole('button', { name: 'Create world' })
-    await waitFor(() => expect(createButton).toBeEnabled())
-    await userEvent.click(createButton)
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Create world' })).toBeEnabled())
+    await userEvent.click(screen.getByRole('button', { name: 'Create world' }))
 
     await waitFor(() => expect(screen.getByRole('heading', { name: 'New' })).toBeInTheDocument())
     const img = container.querySelector('img.media')
