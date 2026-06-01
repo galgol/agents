@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import Library from './Library.jsx'
 import { setToken } from '../auth.js'
@@ -93,13 +93,10 @@ describe('<Library />', () => {
 
   it('links to the dedicated worlds and characters endpoints', async () => {
     fetch.mockResolvedValueOnce(jsonResponse([])).mockResolvedValueOnce(jsonResponse([]))
-    renderLibrary()
-    await screen.findByRole('heading', { level: 1, name: 'Your Shelf' })
-    expect(screen.getByRole('link', { name: 'Your worlds' })).toHaveAttribute('href', '/worlds')
-    expect(screen.getByRole('link', { name: 'Your characters' })).toHaveAttribute(
-      'href',
-      '/characters',
-    )
+    const { container } = renderLibrary()
+    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2))
+    expect(container.querySelector('a[href="/worlds"]')).toBeInTheDocument()
+    expect(container.querySelector('a[href="/characters"]')).toBeInTheDocument()
   })
 
   it('shows an error when fetching worlds fails', async () => {

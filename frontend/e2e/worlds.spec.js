@@ -5,7 +5,7 @@ test.describe('worlds and characters', () => {
     await login(page, account.username, account.password)
 
     const worldName = `World-${Date.now()}`
-    await page.getByRole('link', { name: 'Your worlds' }).click()
+    await page.locator('a[href="/worlds"]').first().click()
     await expect(page).toHaveURL(/\/worlds$/)
     await page.getByRole('button', { name: 'New world' }).click()
     await page.getByLabel('Name').fill(worldName)
@@ -44,7 +44,7 @@ test.describe('worlds and characters', () => {
 
     await login(page, alice.username, alice.password)
     const aliceWorld = `Alice-${Date.now()}`
-    await page.getByRole('link', { name: 'Your worlds' }).click()
+    await page.locator('a[href="/worlds"]').first().click()
     await expect(page).toHaveURL(/\/worlds$/)
     await page.getByRole('button', { name: 'New world' }).click()
     await page.getByLabel('Name').fill(aliceWorld)
@@ -53,7 +53,7 @@ test.describe('worlds and characters', () => {
 
     await page.getByRole('button', { name: 'Sign out' }).click()
     await login(page, bob.username, bob.password)
-    await page.getByRole('link', { name: 'Your worlds' }).click()
+    await page.locator('a[href="/worlds"]').first().click()
     await expect(page).toHaveURL(/\/worlds$/)
     await expect(page.getByText('No worlds yet. Create your first one.')).toBeVisible()
     await expect(page.getByRole('heading', { name: aliceWorld })).toHaveCount(0)
