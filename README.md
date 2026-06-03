@@ -4,7 +4,7 @@ Two-service monorepo: **FastAPI backend** (Python) and **React + Vite frontend**
 
 ## 1. Cursor implement issue (GitHub Actions)
 
-When a maintainer opens an issue, [`.github/workflows/agent-issue.yml`](.github/workflows/agent-issue.yml) may trigger a cloud Cursor agent that implements the request and opens a PR. Driver script: [`.github/scripts/cursor-implement-issue.ts`](.github/scripts/cursor-implement-issue.ts).
+When a maintainer opens an issue, `[.github/workflows/agent-issue.yml](.github/workflows/agent-issue.yml)` may trigger a cloud Cursor agent that implements the request and opens a PR. Driver script: `[.github/scripts/cursor-implement-issue.ts](.github/scripts/cursor-implement-issue.ts)`.
 
 **Setup:** add repository secret `CURSOR_API_KEY`, and install the [Cursor GitHub App](https://cursor.com/dashboard) on this repo so cloud agents can clone, push, and open PRs.
 
@@ -34,13 +34,12 @@ GitHub                          GitHub Actions runner                Cursor clou
 
 **Notes**
 
-1. **Cursor cloud (*1)** — PR is opened on a new branch. The Cursor GitHub App is installed and Cursor cloud holds an auth token on the original GitHub repo, so it can open a PR there (not via the Actions runner’s `GITHUB_TOKEN`). Clone, tools, and edits run on a Cursor-hosted VM; the LLM still runs on Cursor’s API (remote inference).
-
-2. **Two jobs (*2)** — Two separate **jobs** (each gets its own runner VM) separate permissions and logic. Job A uses `contents: write` because the GitHub endpoint for collaborator permission (`GET .../collaborators/{user}/permission`) is only callable with push-level access; Job B uses read-only (`contents: read`, `issues: read`) because it only sends an HTTP call to Cursor with the repo URL—the agent runs in Cursor cloud, not on the runner.
+1. **Cursor cloud (1)* — PR is opened on a new branch. The Cursor GitHub App is installed and Cursor cloud holds an auth token on the original GitHub repo, so it can open a PR there (not via the Actions runner’s `GITHUB_TOKEN`). Clone, tools, and edits run on a Cursor-hosted VM; the LLM still runs on Cursor’s API (remote inference).
+2. **Two jobs (2)* — Two separate **jobs** (each gets its own runner VM) separate permissions and logic. Job A uses `contents: write` because the GitHub endpoint for collaborator permission (`GET .../collaborators/{user}/permission`) is only callable with push-level access; Job B uses read-only (`contents: read`, `issues: read`) because it only sends an HTTP call to Cursor with the repo URL—the agent runs in Cursor cloud, not on the runner.
 
 ## 2. Cursor PR review (GitHub Actions)
 
-When a PR targets `main` or `master`, [`.github/workflows/agent-pr.yml`](.github/workflows/agent-pr.yml) runs a **local** Cursor agent on the Actions runner (not Cursor cloud). Driver script: [`.github/scripts/cursor-review-pr.ts`](.github/scripts/cursor-review-pr.ts).
+When a PR targets `main` or `master`, `[.github/workflows/agent-pr.yml](.github/workflows/agent-pr.yml)` runs a **local** Cursor agent on the Actions runner (not Cursor cloud). Driver script: `[.github/scripts/cursor-review-pr.ts](.github/scripts/cursor-review-pr.ts)`.
 
 **Setup:** repository secret `CURSOR_API_KEY`. Optional repo variable `CURSOR_REVIEW_MODEL` (default `claude-sonnet-4-6` in the script).
 
@@ -83,7 +82,7 @@ GitHub                              GitHub Actions runner (single job)
 
 **Notes**
 
-1. **Local runtime (*1)** — `local: { cwd: process.cwd() }` means tools and filesystem are on the **checked-out repo on the runner**, not a Cursor cloud VM. There is no cloud clone, branch push, or `autoCreatePR`. The runner still calls Cursor’s API (`CURSOR_API_KEY`) for **LLM inference** (model runs on Cursor’s servers, not on the runner).
+1. **Local runtime (1)* — `local: { cwd: process.cwd() }` means tools and filesystem are on the **checked-out repo on the runner**, not a Cursor cloud VM. There is no cloud clone, branch push, or `autoCreatePR`. The runner still calls Cursor’s API (`CURSOR_API_KEY`) for **LLM inference** (model runs on Cursor’s servers, not on the runner).
 
 ### Where the model runs (local vs cloud)
 
@@ -102,6 +101,8 @@ flowchart LR
   tools <-->|CURSOR_API_KEY| llm
 ```
 
+
+
 **Cloud runtime (`agent-issue`)** — Job B only launches the agent; clone, tools, edits, and PR on Cursor cloud VM; LLM on Cursor’s API:
 
 ```mermaid
@@ -119,15 +120,14 @@ flowchart LR
   work <-->|CURSOR_API_KEY| llm
 ```
 
-### Jobs vs runners
 
-- A **job** is a unit in the workflow YAML; a **runner** is the VM that executes it.
-- **Steps in one job** share the same runner (`agent-pr` = one job, one VM).
-- **Each job** on GitHub-hosted runners gets a **new** VM (`agent-issue` = two jobs → two VMs). `needs:` passes outputs only, not disk or env.
 
 ### Related automation
 
-| Workflow | Trigger | Runtime |
-|----------|---------|---------|
-| [agent-issue.yml](.github/workflows/agent-issue.yml) | Issue opened | Cursor **cloud** (`Agent.prompt` + `autoCreatePR`) |
-| [agent-pr.yml](.github/workflows/agent-pr.yml) | PR to `main` / `master` | Cursor **local** on the runner ([cursor-review-pr.ts](.github/scripts/cursor-review-pr.ts)) |
+
+| Workflow                                             | Trigger                 | Runtime                                                                                     |
+| ---------------------------------------------------- | ----------------------- | ------------------------------------------------------------------------------------------- |
+| [agent-issue.yml](.github/workflows/agent-issue.yml) | Issue opened            | Cursor **cloud** (`Agent.prompt` + `autoCreatePR`)                                          |
+| [agent-pr.yml](.github/workflows/agent-pr.yml)       | PR to `main` / `master` | Cursor **local** on the runner ([cursor-review-pr.ts](.github/scripts/cursor-review-pr.ts)) |
+
+
